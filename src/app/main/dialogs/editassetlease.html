@@ -1,0 +1,86 @@
+<md-dialog aria-label="waiting list" class="custom-form" style="width:70%; border-radius: 5px" ng-cloak >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Lease Details</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+            <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column" class="page" >
+            <form layout-margin name="assetItemForm">
+                <fieldset>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Asset:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <input md-no-asterisk type="text" readonly ng-model="vm.assetToLease.Name">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Asset Number:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" readonly ng-model="vm.assetToLease.Number">
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label">Lease Cost:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="number" readonly ng-model="vm.assetToLease.LeaseCost">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Project:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <md-select md-no-asterisk name="project"
+                                ng-model="vm.selectedProject" required>
+                                <md-option ng-repeat="project in vm.Projects"
+                                    ng-value="project">
+                                    {{project.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Expected Lease Out Date:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="date" required ng-model="vm.assetToLease.ExpectedLeaseOutDate" max="{{vm.assetToLease.ExpectedReturnDate | date:'yyyy-MM-dd'}}" >
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label">Expected Return Date:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="date" required min="{{vm.assetToLease.ExpectedLeaseOutDate | date:'yyyy-MM-dd'}}"  ng-model="vm.assetToLease.ExpectedReturnDate">
+                        </md-input-container>
+                    </div>
+                    <div layout="row" layout-align="center center">
+                        <md-button ng-click="vm.updateLeaseDetails()" class="md-raised md-accent" aria-label="Submit"
+                            ng-disabled="assetItemForm.$invalid">
+                            add
+                        </md-button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </md-dialog-content>
+</md-dialog>

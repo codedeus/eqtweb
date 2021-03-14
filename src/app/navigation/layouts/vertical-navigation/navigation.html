@@ -1,0 +1,53 @@
+<md-toolbar class="navigation-header md-whiteframe-1dp" layout="row" layout-align="space-between center">
+    <div class="logo" layout="row" layout-align="start center">
+        <!-- <span class="logo-image">
+            <img style="width: 25px;" src="./assets/images/logos/logo.png"/>
+        </span> -->
+        <span class="logo-text">NESTOIL</span>
+
+        <!-- <md-menu md-position-mode="target-left target" md-offset="0 50">
+            <md-button id="logoutButton" aria-label="Open demo menu" class="md-icon-button" ng-click="$mdMenu.open($event)">
+                <md-icon  md-svg-icon="./assets/icons/svg/more_vert.svg"></md-icon>
+            </md-button>
+            <md-menu-content ng-mouseleave="$mdMenu.close()">
+                <md-menu-item data-ui-sref-active="active">
+                    <md-button >
+                        <md-icon md-svg-icon="./assets/icons/svg/menu-button.svg"></md-icon>
+                        <span md-menu-align-target>Edit Profile</span>
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item data-ui-sref-active="active">
+                    <md-button >
+                        <ng-md-icon icon="photo" md-menu-align-target></ng-md-icon>
+                        Change Profile Picture
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item data-ui-sref-active="active" data-ng-show="authentication.user.provider === 'local'">
+                    <md-button data-ui-sref="settings.password">
+                        <ng-md-icon icon="lock" md-menu-align-target></ng-md-icon>
+                        Change Password
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item data-ui-sref-active="active">
+                    <md-button data-ui-sref="settings.accounts">
+                        <ng-md-icon icon="share" md-menu-align-target></ng-md-icon>
+                        Manage Social Accounts
+                    </md-button>
+                </md-menu-item>
+                <md-menu-divider></md-menu-divider>
+                <md-menu-item data-ui-sref-active="active">
+                    <md-button ng-click="vm.signOut()">
+                        <ng-md-icon icon="logout" md-menu-align-target></ng-md-icon>
+                        Sign out
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu> -->
+    </div>
+
+    <md-icon class="fold-toggle s18" md-font-icon="icon-backburger" hide show-gt-sm
+             ng-click="vm.toggleMsNavigationFolded()"></md-icon>
+</md-toolbar>
+
+<ms-navigation class="scrollable" folded="vm.folded" ms-scroll="vm.msScrollOptions"></ms-navigation>
+

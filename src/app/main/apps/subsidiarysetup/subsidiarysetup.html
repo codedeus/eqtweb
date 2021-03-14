@@ -1,0 +1,69 @@
+<div layout="row" id="drug-register" ng-cloak="" layout-fill>
+
+    <div layout="column" class="page" flex>
+        <md-card class="default header" layout="column" layout-align="center left">
+        </md-card>
+
+        <md-content class="body" layout="column" flex layout-margin ms-scroll>
+            
+            <form name="newSubsidiaryForm">
+                <h3 class="sub-title">New Subsidiary</h3>
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newSubsidiary.Name">
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newSubsidiary.Code">
+                        </md-input-container>
+    
+                        <div>
+                            <md-button class="md-raised md-accent" ng-click="vm.addNewSubsidiary()" 
+                                ng-disabled="newSubsidiaryForm.$invalid || newSubsidiaryForm.$pristine">
+                                save
+                            </md-button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        
+            <div class="table">
+                <h3 class="sub-title">Current Subsidiaries</h3>
+                
+                <md-table-container>
+                    <div layout="row" class="tool-bar" layout-align="end" ng-if="vm.selectedSubsidiaries.length>0">
+                        <md-button  class="md-raised md-warn" ng-click="vm.deleteRowCallback(vm.selectedSubsidiaries)">
+                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedSubsidiaries" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Name</span></th>
+                                <th md-column><span>Code</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item.Id" md-select-id="item.Id" ng-repeat="item in vm.subsidiaries">
+                                <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
+                                <td md-cell ng-click="vm.editProperty($event, item,'Name')">{{item.Name}}</td>
+                                <td md-cell ng-click="vm.editProperty($event, item,'Code')">{{item.Code}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+        </md-content>
+    </div>
+</div>

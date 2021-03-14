@@ -1,0 +1,79 @@
+<md-dialog aria-label="waiting list" class="custom-form" style="width:50%; border-radius: 5px" ng-cloak >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Project</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+            <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column" class="page" >
+            <form layout-margin name="projectEditForm">
+                <fieldset>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Subsidiary:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <md-select md-no-asterisk name="subsidiary"
+                                ng-model="vm.project.SubsidiaryId" required>
+                                <md-option ng-repeat="subsidiary in vm.subsidiaries"
+                                    ng-value="subsidiary.Id">
+                                    {{subsidiary.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+    
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Location:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <md-select md-no-asterisk name="location"
+                                ng-model="vm.project.LocationId" required>
+                                <md-option ng-repeat="location in vm.locations"
+                                    ng-value="location.Id">
+                                    {{location.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Project Name:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.project.Name">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">    
+                        <div flex="20">
+                            <label class="label">Project Code:</label>
+                        </div>
+                        <md-input-container flex="70">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.project.Code">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-accent" ng-click="vm.updateProject()" 
+                            ng-disabled="projectEditForm.$invalid || projectEditForm.$pristine">
+                            save
+                        </md-button>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+    </md-dialog-content>
+</md-dialog>

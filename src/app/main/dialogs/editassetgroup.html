@@ -1,0 +1,60 @@
+<md-dialog aria-label="waiting list" class="custom-form" style="width:70%; border-radius: 5px" ng-cloak >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Asset Sub-Group</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+            <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column" class="page" >
+            <form name="editAssetGroupForm">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Asset Group:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetGroup"
+                            ng-change="vm.assetGroupChanged(vm.subGroup.ParentId)"
+                                ng-model="vm.subGroup.ParentId" required>
+                                <md-option ng-repeat="assetGroup in vm.AssetGroups"
+                                    ng-value="assetGroup.Id">
+                                    {{assetGroup.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.subGroup.Name">
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.subGroup.Code">
+                        </md-input-container>
+                        <div>
+                            <md-button class="md-raised md-accent" ng-click="vm.submit()" 
+                                ng-disabled="editAssetGroupForm.$invalid || editAssetGroupForm.$pristine">
+                                save
+                            </md-button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </md-dialog-content>
+</md-dialog>

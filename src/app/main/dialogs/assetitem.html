@@ -1,0 +1,276 @@
+<md-dialog aria-label="waiting list" class="custom-form" style="width:70%; border-radius: 5px" ng-cloak >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Asset Item</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+            <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column" class="page" >
+            <form name="assetItemForm">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Asset Group:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetGroup"
+                                ng-change="vm.assetGroupChanged(vm.newAssetItem.AssetGroupId)"
+                                ng-model="vm.newAssetItem.AssetGroupId" required>
+                                <md-option ng-repeat="assetGroup in vm.assetGroup.AssetGroups"
+                                    ng-value="assetGroup.Id">
+                                    {{assetGroup.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Sub Group:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetSubGroup"
+                                ng-model="vm.newAssetItem.AssetSubGroupId" required>
+                                <md-option ng-repeat="subGroup in vm.assetSubGroup.AssetGroups"
+                                    ng-value="subGroup.Id">
+                                    {{subGroup.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Asset Description:</label>
+                        </div>
+                        <md-autocomplete md-no-cache="vm.noCache" 
+                           flex="70"
+                            ng-model-options="{debounce: 1000}"
+                            md-selected-item="vm.selectedAsset" 
+                            md-search-text="vm.assetSearchText" 
+                            md-items="item in vm.searchForAssets(vm.assetSearchText)" 
+                            md-item-text="item.Name" 
+                            md-min-length="3"
+                            required 
+                            md-floating-label="..."
+                            placeholder="Search..." 
+                            md-menu-class="autocomplete-custom-template" flex>
+                            <md-item-template>
+                                <span class="item-title">
+                                    <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
+                                    <span> {{item.Name}} </span>
+                                </span>
+                            </md-item-template>
+                        </md-autocomplete>
+                    </div>
+    
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.Code">
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label">Registration Number:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.RegistrationNumber">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Serial/Chasis Number:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.SerialNumber">
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                               Type:</label>
+                        </div>
+
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetType"
+                                ng-model="vm.newAssetItem.AssetTypeId" required>
+                                <md-option ng-repeat="assetType in vm.assetType.AssetTypes"
+                                    ng-value="assetType.Id">
+                                    {{assetType.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Make/Brand:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetBrand"
+                                ng-model="vm.newAssetItem.AssetBrandId" required>
+                                <md-option ng-repeat="assetBrand in vm.assetBrand.AssetBrands"
+                                    ng-value="assetBrand.Id">
+                                    {{assetBrand.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                               Model:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="assetModel"
+                                ng-model="vm.newAssetItem.AssetModelId" required>
+                                <md-option ng-repeat="assetModel in vm.assetModel.Data"
+                                    ng-value="assetModel.Id">
+                                    {{assetModel.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Capacity/Rating:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="capacity"
+                                ng-model="vm.newAssetItem.CapacityId" required>
+                                <md-option ng-repeat="capacity in vm.assetCapacity.Data"
+                                    ng-value="capacity.Id">
+                                    {{capacity.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                               Dimension (meter):</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="dimension"
+                                ng-model="vm.newAssetItem.DimensionId" required>
+                                <md-option ng-repeat="dimension in vm.assetDimension.Data"
+                                    ng-value="dimension.Id">
+                                    {{dimension.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Engine Type:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="engineType"
+                                ng-model="vm.newAssetItem.EngineTypeId" required>
+                                <md-option ng-repeat="engineType in vm.engineType.Data"
+                                    ng-value="engineType.Id">
+                                    {{engineType.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                               Engine Model:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="engineModel"
+                                ng-model="vm.newAssetItem.EngineModelId" required>
+                                <md-option ng-repeat="engineModel in vm.engineModel.Data"
+                                    ng-value="engineModel.Id">
+                                    {{engineModel.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Engine Number:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.EngineNumber">
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label">Value (&#8358;):</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="number" required ng-model="vm.newAssetItem.AssetValue">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Manufacture Year:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.ManufactureYear">
+                        </md-input-container>
+                        <div flex="20">
+                            <label class="label">Acquisition Year:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.AcquisitionYear">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Lease Cost(/Day):</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="number" min="0" required ng-model="vm.newAssetItem.LeaseCost">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-accent" ng-click="vm.submitForm()" 
+                                ng-disabled="assetItemForm.$invalid || assetItemForm.$pristine">
+                                submit
+                        </md-button>
+                    </div>
+                    <!-- <fieldset>
+                        <legend>Bulk Upload</legend>
+                        <div>
+                            <md-button class="md-accent md-raised" ng-click="vm.downloadTemlate()">Download Template</md-button>
+                            <md-input-container>
+                                <label for="excelFileInput"></label>
+                                <input id="excelFileInput" ng-file-model="vm.selectedFile" type="file"/>
+                            </md-input-container>
+                            <md-button class="md-accent md-raised" ng-click="vm.handleFile()">Upload</md-button>
+                        </div>
+                    </fieldset> -->
+                </fieldset>
+            </form>
+        </div>
+    </md-dialog-content>
+</md-dialog>

@@ -1,0 +1,24 @@
+{
+    "HOSPITALSPECIFICS": {
+        "INTRO_TITLE": "Welcome to the FUSE!",
+        "INTRO_DESCRIPTION": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper nisl erat, vel convallis elit fermentum pellentesque. Sed mollis velit facilisis facilisis viverra.",
+        "TITLE": "Log in to your accountsddddddddd",
+        "DESCRIPTION": "Sed mollis velit facilisis facilisis viverra",
+        "USERNAME": "Emailllllll",
+        "PASSWORD": "Passworddddddddd",
+        "REMEMBER_ME": "Remember Me",
+        "FORGOT_PASSWORD": "Forgot Password?",
+        "LOG_IN": "LOG INnnnnnnnnnn",
+        "OR": "OR",
+        "WITH_GOOGLE": "Log in with Google",
+        "WITH_FACEBOOK": "Log in with Facebook",
+        "DONT_HAVE_ACCOUNT": "Don't have an account?",
+        "CREATE_ACCOUNT": "Create an account",
+        "CLEAR_STORAGE":"Clear Local Storage",
+        "ERRORS": {
+            "EMAIL_REQUIRED": "Email field is required",
+            "EMAIL_MUST_VALID": "Email must be a valid e-mail address",
+            "PASSWORD_REQUIRED": "Password field is required"
+        }
+    }
+}

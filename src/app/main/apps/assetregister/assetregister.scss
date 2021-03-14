@@ -1,0 +1,149 @@
+#drug-register {
+    .page {
+
+        .table{
+            margin: 0px;
+            padding-top: 10px;
+
+            .tool-bar{
+                border-bottom: 1px solid #ccc;
+            }
+        }
+
+        md-table-container {
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            overflow : auto;
+
+            .table-footer {
+                td {
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-weight: 900;
+                    color: rgba(0, 0, 0, 0.70);
+                }
+                
+            }
+
+            button.export {
+                text-transform: none;
+                color: #21a5e5;
+                font-size: 11px;
+            }
+
+            th {
+                font-family: Arial, Helvetica, sans-serif;
+                font-weight: 900;
+            }
+        }
+
+        md-card {
+            margin: 0px;
+
+            h3, md-radio-group {
+                padding-left: 20px;
+                margin: 12px 0px;
+            }
+        }
+
+        .search-by {
+            text-align: right;
+
+            select {
+            height: 40px;
+            border: none;
+            padding: 0 10px 0 15px;
+            cursor: pointer;
+            border-right: 1px solid #ddd;
+            }
+        }
+
+        md-card.search {
+                padding: 10px;
+                margin-bottom: 10px;
+                min-height: 60px;
+
+                .label {
+                display: block;
+                margin-top: 6px;
+                margin-right: 10px;
+                text-align: right;
+                font-size: 16px;
+            }
+
+            .label.search-label {
+                margin-top: 9px;
+            }
+        }
+
+        form {
+            padding: 0px;
+
+            md-card {
+                padding: 10px;
+                margin-top: 20px;
+            }
+            
+            fieldset {
+                color: #000000;
+
+                .socio-economic-questions{
+                    margin-top: 20px;
+                }
+            }
+
+            .label {
+                display: block;
+                margin-top: 6px;
+                margin-right: 10px;
+                text-align: right;
+                font-size: 16px;
+            }
+
+            .label.search-label {
+                margin-top: 9px;
+            }
+
+            .label.radio-label {
+                margin-top: 3px;
+            }
+
+            .label.button-label {
+                margin-top: 9px;
+                margin-right: 0px;
+                font-weight: bold;
+            }
+
+            .deposit{
+                display: inline-block;
+            }
+
+            md-input-container {
+                margin-top: 0px;
+                margin-bottom: 0px;
+                min-height: 58px;
+
+                input:focus {
+                    border-color: rgb(0,145,234);
+                }
+
+                textarea:focus {
+                    border-color: rgb(0,145,234);
+                }
+
+                .button {
+                    cursor: pointer;
+                    color: #7d7d7d;
+                }
+
+                .button:hover {
+                    color: rgb(0,145,234);
+                }
+
+                md-icon {
+                    color: #7d7d7d;
+                }
+            }
+
+        }
+    }
+}

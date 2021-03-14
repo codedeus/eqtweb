@@ -1,0 +1,200 @@
+<div layout="row" id="drug-register" ng-cloak="" layout-fill>
+    <div layout="column" class="page" flex>
+        <md-card class="default header" layout="column" layout-align="center left">
+            <md-radio-group layout="row" layout-align="start center" ng-change="vm.actionTypeChanged()" ng-model="vm.actionType">
+                <md-radio-button value="project">Project</md-radio-button>
+                <md-radio-button value="site">Project Site</md-radio-button>
+            </md-radio-group>
+        </md-card>
+
+        <md-content class="body" layout="column" flex layout-margin ms-scroll>
+            <form name="newProjectForm" ng-if="vm.actionType=='project'">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Select Subsidiary:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="subsidiary"
+                                ng-model="vm.newProject.SubsidiaryId" required>
+                                <md-option ng-repeat="subsidiary in vm.subsidiaries"
+                                    ng-value="subsidiary.Id">
+                                    {{subsidiary.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Select Location:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="location"
+                                ng-model="vm.newProject.LocationId" required>
+                                <md-option ng-repeat="subsidiary in vm.location.Locations"
+                                    ng-value="subsidiary.Id">
+                                    {{subsidiary.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Project Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newProject.Name">
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Project Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newProject.Code">
+                        </md-input-container>
+                    </div>
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-accent" ng-click="vm.saveProject()" 
+                                ng-disabled="newProjectForm.$invalid || newProjectForm.$pristine">
+                                save
+                        </md-button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <form name="newProjectSiteForm" ng-if="vm.actionType=='site'">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Select Subsidiary:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="subsidiary"
+                                ng-model="vm.projectSite.SubsidiaryId"
+                                ng-change="vm.selectedSubsidiaryChange(vm.projectSite.SubsidiaryId)" required>
+                                <md-option ng-repeat="subsidiary in vm.subsidiaries"
+                                    ng-value="subsidiary.Id">
+                                    {{subsidiary.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Select Project:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="project"
+                                ng-change="vm.selectedProjectChange(vm.projectSite.ProjectId)"
+                                ng-model="vm.projectSite.ProjectId" required>
+                                <md-option ng-repeat="project in vm.subsidiaryProject.Projects"
+                                    ng-value="project.Id">
+                                    {{project.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Site Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.projectSite.SiteName">
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Site Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.projectSite.SiteCode">
+                        </md-input-container>
+                    </div>
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-accent" ng-click="vm.saveProjectSite()" 
+                                ng-disabled="newProjectSiteForm.$invalid || newProjectSiteForm.$pristine">
+                                save
+                        </md-button>
+                    </div>
+                </fieldset>
+            </form>
+
+           <div class="table"> 
+                <md-table-container ng-if="vm.actionType=='project'">
+                    <div layout="row" class="tool-bar" layout-align="end" ng-if="vm.selectedProjects.length>0">
+                        <md-button  class="md-raised md-warn" ng-click="vm.deleteRowCallback(vm.selectedProjects)">
+                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedProjects" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Name</span></th>
+                                <th md-column><span>Code</span></th>
+                                <th md-column><span>Subsidiary</span></th>
+                                <th md-column><span>Location</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item.Id" md-select-id="item.Id" ng-repeat="item in vm.project.Projects">
+                                <td md-cell>{{ $index+1}}</td>
+                                <td md-cell >{{item.Name}}</td>
+                                <td md-cell >{{item.Code}}</td>
+                                <td md-cell >{{item.Subsidiary}}</td>
+                                <td md-cell >{{item.Location}}</td>
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.openEditForm($event, item, $index)">edit</md-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <md-table-pagination md-limit="query.limit" 
+                        md-limit-options="limitOptions" 
+                        md-page="query.page" md-total="{{vm.project.TotalCount}}" 
+                        md-page-select="options.pageSelect" 
+                        md-boundary-links="options.boundaryLinks" 
+                        md-on-paginate="vm.GetProjects"></md-table-pagination>
+                </md-table-container>
+
+                <md-table-container ng-if="vm.actionType=='site'">
+                    <div layout="row" class="tool-bar" layout-align="end" ng-if="vm.selectedProjectSites.length>0">
+                        <md-button  class="md-raised md-warn" ng-click="vm.deleteRowCallback(vm.selectedProjectSites)">
+                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedProjectSites" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Project Name</span></th>
+                                <th md-column><span>Site Name</span></th>
+                                <th md-column><span>Site Code</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item.Id" md-select-id="item.Id" ng-repeat="item in vm.projectSites">
+                                <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
+                                <td md-cell >{{item.Project}}</td>
+                                <td md-cell >{{item.SiteName}}</td>
+                                <td md-cell >{{item.SiteCode}}</td>
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.openProjectSiteEditForm($event, item, $index)">edit</md-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+        </md-content>
+    </div>
+</div>

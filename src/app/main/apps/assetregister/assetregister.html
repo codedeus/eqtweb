@@ -1,0 +1,318 @@
+<div layout="row" id="drug-register" ng-cloak="" layout-fill>
+
+    <div layout="column" class="page" flex>
+        <md-card class="default header" layout="column" layout-align="center left">
+        </md-card>
+
+        <md-content class="body" layout="column" flex layout-padding layout-margin ms-scroll>
+                <form layout-margin name="assetItemForm">
+                    <fieldset>
+                        <legend>Filters</legend>
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">
+                                    Asset Group:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="assetGroup"
+                                    ng-change="vm.assetGroupChanged(vm.newAssetItem.AssetGroupId)"
+                                    ng-model="vm.newAssetItem.AssetGroupId">
+                                    <md-option ng-repeat="assetGroup in vm.assetGroup.AssetGroups"
+                                        ng-value="assetGroup.Id">
+                                        {{assetGroup.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <div flex="20">
+                                <label class="label">
+                                    Sub Group:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="assetSubGroup"
+                                    ng-model="vm.newAssetItem.AssetSubGroupId">
+                                    <md-option ng-repeat="subGroup in vm.assetSubGroup.AssetGroups"
+                                        ng-value="subGroup.Id">
+                                        {{subGroup.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">Asset Description:</label>
+                            </div>
+                            <md-autocomplete md-no-cache="vm.noCache" 
+                               flex="25"
+                                ng-model-options="{debounce: 1000}"
+                                md-selected-item="vm.selectedAsset" 
+                                md-search-text="vm.assetSearchText" 
+                                md-items="item in vm.searchForAssets(vm.assetSearchText)" 
+                                md-item-text="item.Name" 
+                                md-min-length="2"
+                                md-floating-label="..."
+                                placeholder="Search..." 
+                                md-menu-class="autocomplete-custom-template" flex>
+                                <md-item-template>
+                                    <span class="item-title">
+                                        <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
+                                        <span> {{item.Name}} </span>
+                                    </span>
+                                </md-item-template>
+                            </md-autocomplete>
+
+                            <div flex="20">
+                                <label class="label">
+                                   Type:</label>
+                            </div>
+
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="assetType"
+                                    ng-model="vm.newAssetItem.AssetTypeId">
+                                    <md-option ng-repeat="assetType in vm.assetType.AssetTypes"
+                                        ng-value="assetType.Id">
+                                        {{assetType.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">
+                                    Make/Brand:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="assetBrand"
+                                    ng-model="vm.newAssetItem.AssetBrandId">
+                                    <md-option ng-repeat="assetBrand in vm.assetBrand.AssetBrands"
+                                        ng-value="assetBrand.Id">
+                                        {{assetBrand.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <div flex="20">
+                                <label class="label">
+                                   Model:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="assetModel"
+                                    ng-model="vm.newAssetItem.AssetModelId">
+                                    <md-option ng-repeat="assetModel in vm.assetModel.Data"
+                                        ng-value="assetModel.Id">
+                                        {{assetModel.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">
+                                    Capacity/Rating:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="capacity"
+                                    ng-model="vm.newAssetItem.CapacityId">
+                                    <md-option ng-repeat="capacity in vm.assetCapacity.Data"
+                                        ng-value="capacity.Id">
+                                        {{capacity.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <div flex="20">
+                                <label class="label">
+                                   Dimension (meter):</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="dimension"
+                                    ng-model="vm.newAssetItem.DimensionId">
+                                    <md-option ng-repeat="dimension in vm.assetDimension.Data"
+                                        ng-value="dimension.Id">
+                                        {{dimension.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">
+                                    Engine Type:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="engineType"
+                                    ng-model="vm.newAssetItem.EngineTypeId">
+                                    <md-option ng-repeat="engineType in vm.engineType.Data"
+                                        ng-value="engineType.Id">
+                                        {{engineType.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <div flex="20">
+                                <label class="label">
+                                   Engine Model:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <md-select md-no-asterisk name="engineModel"
+                                    ng-model="vm.newAssetItem.EngineModelId">
+                                    <md-option ng-repeat="engineModel in vm.engineModel.Data"
+                                        ng-value="engineModel.Id">
+                                        {{engineModel.Name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <!-- <div layout="row">
+                            <div flex="20">
+                                <label class="label">Manufacture Year:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.ManufactureYear">
+                            </md-input-container>
+                            <div flex="20">
+                                <label class="label">Acquisition Year:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <input md-no-asterisk type="text" required ng-model="vm.newAssetItem.AcquisitionYear">
+                            </md-input-container>
+                        </div> -->
+
+                       
+
+                        <div layout="row" layout-align="center center">
+                            <md-button class="md-raised md-accent" ng-click="vm.GetAllAssets()" 
+                                    ng-disabled="assetItemForm.$invalid || assetItemForm.$pristine">
+                                    view
+                            </md-button>
+                        </div>
+                        
+                    </fieldset>
+                </form>
+                <fieldset>
+                    <legend>Bulk Upload</legend>
+                    <div>
+                        <md-button class="md-accent md-raised" ng-click="vm.downloadTemlate()">Download Template</md-button>
+                        <md-input-container>
+                            <label for="excelFileInput"></label>
+                            <input id="excelFileInput" ng-file-model="vm.selectedFile" type="file"/>
+                        </md-input-container>
+                        <md-button class="md-accent md-raised" ng-click="vm.handleFile()">Upload</md-button>
+                    </div>
+                  </fieldset>
+            <div class="table">
+                <h3 class="sub-title">Current Items</h3>
+                
+                <md-table-container>
+                    <div layout="row" layout-align="end" class="tool-bar">
+                        <!-- <md-autocomplete md-no-cache="vm.noCache" 
+                            style="margin-left: 110px;"
+                            ng-model-options="{debounce: 1000}"
+                            md-selected-item="vm.selectedItem" 
+                            md-selected-item-change="vm.selectedItemChange(item)" 
+                            md-search-text="vm.assetItemSearchText" 
+                            md-items="item in vm.searchForAssetItems(vm.assetItemSearchText)" 
+                            md-item-text="item.Name" 
+                            md-min-length="3"
+                            required 
+                            placeholder="Search..." 
+                            md-menu-class="autocomplete-custom-template" flex>
+                            <md-item-template>
+                                <span class="item-title">
+                                    <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
+                                    <span> {{item.Name}} {{item.Code}}</span>
+                                    <span> {{item.Number}} </span>
+                                </span>
+                            </md-item-template>
+                        </md-autocomplete> -->
+
+                        <md-button  class="md-raised md-accent" ng-show="vm.selectedItems.length>0" ng-click="vm.deleteRowCallback(vm.selectedItems)">
+                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                        </md-button>
+        
+                        <md-button  class="md-raised md-accent" ng-click="vm.openNewAssetForm($event)">
+                            Add Asset
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedItems" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Group</span></th>
+                                <th md-column><span>Sub Group</span></th>
+                                <th md-column><span>Description</span></th>
+                                <th md-column><span>Code</span></th>
+                                <th md-column><span>Make/Brand</span></th>
+                                <th md-column><span>Model</span></th>
+                                <th md-column><span>Type</span></th>
+                                <th md-column><span>Dimension</span></th>
+                                <th md-column><span>Capacity</span></th>
+                                <th md-column><span>Serial Number</span></th>
+                                <th md-column><span>Registration Number</span></th>
+                                <th md-column><span>Engine Type</span></th>
+                                <th md-column><span>Engine Model</span></th>
+                                <th md-column><span>Engine Number</span></th>
+                                <th md-column><span>Value (&#8358;)</span></th>
+                                <th md-column><span>Year of Manufacture</span></th>
+                                <th md-column><span>Year of Acquisition</span></th>
+                                <th md-column><span>Lease Cost</span></th>
+                                <th md-column><span>Status</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item.Id" ng-disabled="item.CurrentStatus=='Leased Out'" md-select-id="item.Id" ng-repeat="item in vm.assetItem.Items">
+                                <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
+                                <td md-cell >{{item.AssetGroup}}</td>
+                                <td md-cell >{{item.AssetSubGroup}}</td>
+                                <td md-cell >{{item.Asset}}</td>
+                                <td md-cell >{{item.Code}}</td>
+                                <td md-cell >{{item.AssetBrand}}</td>
+                                <td md-cell >{{item.AssetModel}}</td>
+                                <td md-cell >{{item.AssetType}}</td>
+                                <td md-cell >{{item.Dimension}}</td>
+                                <td md-cell >{{item.Capacity}}</td>
+                                <td md-cell >{{item.SerialNumber}}</td>
+                                <td md-cell >{{item.RegistrationNumber}}</td>
+
+                                <td md-cell >{{item.EngineType}}</td>
+                                <td md-cell >{{item.EngineModel}}</td>
+                                <td md-cell >{{item.EngineNumber}}</td>
+                                <td md-cell >{{item.AssetValue}}</td>
+                                <td md-cell >{{item.ManufactureYear}}</td>
+                                <td md-cell >{{item.AcquisitionYear}}</td>
+
+                                <td md-cell >{{item.LeaseCost}}</td>
+                                <td md-cell >{{item.CurrentStatus}}</td>
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.openEditForm($event, item, $index)">edit</md-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" 
+                        md-page="query.page" 
+                        md-total="{{vm.assetItem.TotalCount}}" 
+                        md-page-select="options.pageSelect" 
+                        md-boundary-links="options.boundaryLinks" 
+                        md-on-paginate="vm.GetAllAssets"></md-table-pagination>
+                </md-table-container>
+            </div>
+        </md-content>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<div layout="row" id="drug-register" ng-cloak="" layout-fill>
+
+    <div layout="column" class="page" flex>
+        <md-card class="default header" layout="column" layout-align="center left">
+        </md-card>
+
+        <md-content class="body" layout="column" flex layout-margin ms-scroll>
+            <form name="newEngineTypeForm">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newEngineType.Name">
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.newEngineType.Code">
+                        </md-input-container>
+    
+                        <div>
+                            <md-button class="md-raised md-accent" ng-click="vm.submitForm()" 
+                                ng-disabled="newEngineTypeForm.$invalid || newEngineTypeForm.$pristine">
+                                save
+                            </md-button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        
+
+            <div class="table">
+                
+                
+                <md-table-container>
+                    <div layout="row" class="tool-bar" layout-align="end" ng-if="vm.selectedTypes.length>0">
+                        <md-button  class="md-raised md-warn" ng-click="vm.deleteRowCallback(vm.selectedTypes)">
+                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedTypes" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Name</span></th>
+                                <th md-column><span>Code</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item.Id" md-select-id="item.Id" ng-repeat="item in vm.engineData.Data">
+                                <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
+                                <td md-cell ng-click="vm.editProperty($event, item,'Name')">{{item.Name}}</td>
+                                <td md-cell ng-click="vm.editProperty($event, item,'Code')">{{item.Code}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <md-table-pagination 
+                        md-limit="query.limit" 
+                        md-limit-options="limitOptions" 
+                        md-page="query.page" 
+                        md-total="{{vm.engineData.TotalCount}}" 
+                        md-page-select="options.pageSelect" 
+                        md-boundary-links="options.boundaryLinks" 
+                        md-on-paginate="vm.GetEngineTypes"></md-table-pagination>
+                </md-table-container>
+            </div>
+        </md-content>
+    </div>
+</div>

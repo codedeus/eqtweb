@@ -1,0 +1,15 @@
+{
+      "plugins": [
+        [
+            "angularjs-annotate",
+            {
+                "explicitOnly": false
+            }
+        ]
+    ],
+    "ignore": [
+        "node_modules",
+        ".tmp",
+        ".tmp/**/*.js"
+    ]
+}

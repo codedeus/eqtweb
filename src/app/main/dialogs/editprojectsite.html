@@ -1,0 +1,77 @@
+<md-dialog aria-label="waiting list" class="custom-form" style="width:50%; border-radius: 5px" ng-cloak >
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Project Site</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+            <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div layout="column" class="page" >
+            <form layout-margin name="projectSiteEditForm">
+                <fieldset>
+                    <div layout="row">
+
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Select Subsidiary:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="subsidiary"
+                                ng-model="vm.projectSite.SubsidiaryId"
+                                ng-change="vm.selectedSubsidiaryChange(vm.projectSite.SubsidiaryId)" required>
+                                <md-option ng-repeat="subsidiary in vm.subsidiaries"
+                                    ng-value="subsidiary.Id">
+                                    {{subsidiary.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Select Project:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="project"
+                                ng-change="vm.selectedProjectChange(vm.projectSite.ProjectId)"
+                                ng-model="vm.projectSite.ProjectId" required>
+                                <md-option ng-repeat="project in vm.subsidiaryProject.Projects"
+                                    ng-value="project.Id">
+                                    {{project.Name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Site Name:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.projectSite.SiteName">
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Site Code:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" required ng-model="vm.projectSite.SiteCode">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-accent" ng-click="vm.updateProjectSite()" 
+                            ng-disabled="projectSiteEditForm.$invalid || projectSiteEditForm.$pristine">
+                            save
+                        </md-button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </md-dialog-content>
+</md-dialog>

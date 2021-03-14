@@ -1,0 +1,34 @@
+{
+    "TOOLBAR": {
+        "TOGGLE_NAVIGATION": "Toggle navigation",
+        "TOGGLE_NAVIGATION_MODE": "Toggle navigation mode",
+        "SEARCH": "Search",
+        "USER_SETTINGS": "User settings",
+        "TOGGLE_QUICK_PANEL": "Toggle quick panel",
+        "ENGLISH": "English",
+        "SPANISH": "Spanish",
+        "TURKISH": "Turkish",
+        "SIGN_OUT": "Sign out",
+        "PASSWORD_CHANGE": "Change Password",
+        "CLOSE_SHIFT": "Close Shift",
+        "CHANGE_LOCATION": "Change Location"
+    },
+    "PAGETITLE": {
+        "Dashboard":"",
+        "Asset Register":"Asset Register",
+        "Subsidiary Setup":"Subsidiary Setup",
+        "Location Setup":"Location Setup",
+        "Project Setup":"Project Setup",
+        "Asset Group":"Asset Group",
+        "New Lease":"New Lease",
+        "Asset Brand":"Asset Brand",
+        "Asset Type":"Asset Type",
+        "Asset Description":"Asset Description",
+        "Engine Type":"Engine Type",
+        "Engine Model":"Engine Model",
+        "Asset Capacity":"Asset Capacity",
+        "Asset Dimension":"Asset Dimension",
+        "Asset Model":"Asset Model",
+        "Daily Lease Update":"Daily Lease Update"
+    }
+}
