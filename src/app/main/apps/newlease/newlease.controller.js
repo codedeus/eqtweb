@@ -8,10 +8,7 @@
         function NewLeaseController(StoreService, $mdDialog, UtilityService, $q){
             var vm = this;
             vm.actionType = 'new';
-            vm.selectedItems = [];
-            vm.assetToLease = {};
-            vm.newLease = {};
-            vm.newLease.AssetList = [];
+            setDefauls();
 
             const GetAllSubsidiaries=()=>{
                 StoreService.GetAllSubsidiaries().then((res)=>vm.subsidiaries = res);
@@ -20,8 +17,10 @@
             GetAllSubsidiaries();
 
             vm.selectedProjectChange = (projectId)=> {
-                StoreService.GetProjectSites(projectId).then((res)=>vm.project.projectSites = res);
+                StoreService.GetProjectSites(projectId).then((res)=>vm.projectSites = res);
             }
+
+            vm.actionTypeChanged =()=> setDefauls();
 
             vm.searchForAssetItems = function (searchText) {
                 if (searchText != undefined) {
@@ -70,11 +69,14 @@
                         }
                     }
                     if (toAdd) {        
+                        vm.assetToLease.ProjectSiteId = vm.selectedProjectSite.Id;
+                        vm.assetToLease.ProjectSite = vm.selectedProjectSite.SiteName;
                         vm.assetToLease.ExpectedLeaseOutDate = new Date();
                         vm.newLease.AssetList.push(vm.assetToLease);
                     }
                     vm.selectedItem = null;
                     vm.assetToLease = {};
+                    vm.selectedProjectSite = null;
                 }
             }
 
@@ -141,13 +143,20 @@
                     return;
                 }
 
-                vm.newLease.ProjectId = vm.selectedProject.Id;
-                StoreService.SubmitNewLeaseDetails(vm.newLease).then((leaseNumber)=>{
-                    UtilityService.showMessage('success',`Submitted successfully. The Lease Number is ${leaseNumber}`);
-                    vm.newLease = {};
-                    vm.project = {};
-                    vm.newLease.AssetList = [];
-                });
+                if(vm.actionType == 'new'){
+                    StoreService.SubmitNewLeaseDetails(vm.newLease).then((leaseNumber)=>{
+                        UtilityService.showMessage('success',`Submitted successfully. The Lease Number is ${leaseNumber}`);
+                        setDefauls();
+                    });
+                }
+                else{
+                    StoreService.UpdateLeaseDetails(vm.newLease).then((success)=>{
+                        if(success){
+                            UtilityService.showMessage('success',`updated successfully`);
+                            setDefauls();
+                        }
+                    });
+                }
             }
 
             vm.editProperty = function(event, item, property) {
@@ -160,45 +169,66 @@
                 });
             };
 
+            vm.selectedLeaseNumberChange =(lease)=>{
+                if(lease){
+                    vm.selectedSubsidiaryChange(lease.SubsidiaryId);
+                    vm.selectedProjectChange(lease.ProjectId);
+                    StoreService.GetLeaseDetailsForEdit(lease.Id).then((res)=>{
+                        vm.newLease = res;
+                    });
+                }
+            }
+
+            function setDefauls(){
+                vm.project = {};
+                vm.selectedItems = [];
+                vm.assetToLease = {};
+                vm.newLease = {};
+                vm.newLease.AssetList = [];
+            }
+
             vm.openEditForm = (ev, item, itemIndex)=>{
                 if(item && item.AssetId){
-                  const itemToEdit = JSON.parse(JSON.stringify(item));
-                  const selectedProject = vm.selectedProject;
-                  const allSubsidiaryProjects = vm.project.Projects;
+                  const itemToEdit = JSON.parse(JSON.stringify(item),JSON.dateParser);
+                  const projectSites = vm.projectSites;
                   const itemData = {
                     LeaseDetails: itemToEdit,
-                    Projects: allSubsidiaryProjects,
-                    SelectedProject:selectedProject
+                    ProjectSites: projectSites
                   }
                   UtilityService.showDialog(ev, 'editassetlease.html', itemData, 'NewLeaseDialogController').then((res)=>{
                     vm.newLease.AssetList[itemIndex] = res;
                   });
                 }
             }
+
+            
         }
 
         function NewLeaseDialogController($mdDialog, dialogData){
             var vm = this;
 
-            vm.selectedProject = dialogData.SelectedProject;
-            vm.Projects = dialogData.Projects;
+            vm.projectSites = dialogData.ProjectSites;
             vm.assetToLease = dialogData.LeaseDetails;
 
-            vm.assetToLease.ExpectedReturnDate = new Date(vm.assetToLease.ExpectedReturnDate);
-            vm.assetToLease.ExpectedLeaseOutDate = new Date(vm.assetToLease.ExpectedLeaseOutDate);
+            vm.selectedProjectSite = {
+                SiteName:vm.assetToLease.ProjectSite,
+                Id:vm.assetToLease.ProjectSiteId
+            };
 
             vm.closeDialog = function () {
-                $mdDialog.hide();
+                $mdDialog.cancel();
+            };
+
+            vm.cancel = function () {
+                $mdDialog.cancel();
             };
 
             vm.updateLeaseDetails = () =>{
                 if(vm.assetToLease && vm.assetToLease.AssetId){
+                    vm.assetToLease.ProjectSite = vm.selectedProjectSite.SiteName;
+                    vm.assetToLease.ProjectSiteId = vm.selectedProjectSite.Id;
                     $mdDialog.hide(vm.assetToLease);
                 }
             }
-        
-            vm.cancel = function () {
-                $mdDialog.cancel();
-            };
         }
 })();

@@ -720,12 +720,66 @@
             return deferred.promise;
         }
 
+        const UpdateLeaseDetails =(payload)=>{
+            const deferred = $q.defer();
+            $rootScope.processingRequest = true;
+            $http.post(`${HmisConstants.baseApiUrl}AssetLease/update`, payload).then(res=>{
+                $rootScope.processingRequest = false;
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
+
         const SearchForLeaseNumber =(searchText)=>{
             const deferred = $q.defer();
-            //$rootScope.processingRequest = true;
             $http.get(`${HmisConstants.baseApiUrl}AssetLease/search`, {params:{searchText}}).then(res=>{
-                //$rootScope.processingRequest = false;
                 deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
+
+        const GetLeaseDetailsForEdit =(leaseId)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}AssetLease/${leaseId}/edit`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const GetLeaseUpdates =(leaseId)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}LeaseUpdate/leases/${leaseId}/updates`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const GetLeaseEntriesForUpdate =(leaseId)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}LeaseUpdate/leases/${leaseId}`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+        
+
+        const GetLeaseUpdateDetails =(leaseUpdateId)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}LeaseUpdate/${leaseUpdateId}`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+        
+        const UpdateLeaseUpdateStatus =(leaseUpdateId, payload)=>{
+            const deferred = $q.defer();
+            $http.post(`${HmisConstants.baseApiUrl}LeaseUpdate/${leaseUpdateId}/update`,payload).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
             });
             return deferred.promise;
         }
@@ -793,7 +847,13 @@
             DeleteProjectSites,
             UpdateProjectSite,
             SearchForAssets,
-            SearchForLeaseNumber
+            SearchForLeaseNumber,
+            GetLeaseDetailsForEdit,
+            UpdateLeaseDetails,
+            GetLeaseUpdates,
+            GetLeaseUpdateDetails,
+            UpdateLeaseUpdateStatus,
+            GetLeaseEntriesForUpdate
         };
         return service;
     }

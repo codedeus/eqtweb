@@ -1,0 +1,108 @@
+<md-dialog aria-label="dialog formt" class="fullscreen-dialog custom-form" style="width:90%; border-radius: 5px" ng-cloak >
+    <form id="serviceForm" name="serviceForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Lease Update Details</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.cancel()">
+                    <md-icon md-svg-src="./assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div layout="column" class="page" >
+                <form layout-margin name="assetItemForm">
+                    <fieldset>
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label">Project:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <input md-no-asterisk type="text" readonly ng-model="vm.leaseUpdate.Project">
+                            </md-input-container>
+        
+                            <div flex="20">
+                                <label class="label">Location:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <input md-no-asterisk type="text" readonly ng-model="vm.leaseUpdate.Location">
+                            </md-input-container>
+                        </div>  
+                    
+                        <div layout="row">
+                            <div flex="20">
+                                <label class="label"> Update Date:</label>
+                            </div>
+                            <md-input-container flex="25">
+                                <label></label>
+                                <input md-no-asterisk type="date" readonly ng-model="vm.leaseUpdate.UpdateDate">
+                            </md-input-container>
+                        </div>     
+                    </fieldset>   
+                
+                    <div class="table">
+                        <h3 class="sub-title">Update Entries</h3>
+                        <md-table-container>
+                            <table md-table md-row-select="true" multiple="true" md-progress="promise">
+                                <thead md-head md-order="query.order">
+                                    <tr md-row>
+                                        <th md-column><span>S/N</span></th>
+                                        <th md-column><span>Group</span></th>
+                                        <th md-column><span>Sub Group</span></th>
+                                        <th md-column><span>Description</span></th>
+                                        <th md-column><span>Code</span></th>
+                                        <th md-column><span>Make/Brand</span></th>
+                                        <th md-column style="white-space:nowrap;">Model</th>
+                                        <th md-column><span>Type</span></th>
+                                        <th md-column><span>Dimension</span></th>
+                                        <th md-column><span>Capacity</span></th>
+                                        <th md-column><span>Serial Number</span></th>
+                                        <th md-column><span>Status</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody md-body>
+                                    <tr md-row md-select="entry.Id" md-select-id="entry.Id" ng-repeat="entry in vm.leaseUpdate.Entries">
+                                        <td md-cell >{{ $index + 1}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetGroup}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetSubGroup}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetItem}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetCode}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetBrand}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetModel}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetType}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetDimension}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetCapacity}}</td>
+                                        <td md-cell style="white-space:nowrap;">{{entry.AssetSerialNumber}}</td>
+                                        <td md-cell >
+                                            <md-select ng-model="entry.AssetStatus" placeholder="">
+                                                <md-option ng-value="status" ng-repeat="status in vm.updateStatuses">
+                                                    {{ status }}
+                                                </md-option>
+                                            </md-select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+                    </div>
+                </form>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="center center">
+            <md-button  ng-click="vm.closeDialog()" class="md-raised md-accent" aria-label="close">
+                close
+            </md-button>
+            <span></span>
+            <!-- <md-button ng-click="answer('not useful')">
+            Not Useful
+            </md-button> -->
+            <md-button  ng-click="vm.saveUpdate()" class="md-raised md-accent" aria-label="Submit">
+            save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

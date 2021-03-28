@@ -2,10 +2,10 @@
 
     <div layout="column" class="page" flex>
         <md-card class="default header" layout="column" layout-align="center left">
-            <md-radio-group layout="row" flex="70" layout-align="start center" ng-model="vm.updateType">
+            <!-- <md-radio-group layout="row" flex="70" layout-align="start center" ng-model="vm.updateType">
                 <md-radio-button value="current">Current Day</md-radio-button>
                 <md-radio-button value="previous">Previous Day</md-radio-button>
-            </md-radio-group>
+            </md-radio-group> -->
         </md-card>
 
         <md-content class="body" layout="column" flex layout-margin ms-scroll>
@@ -15,24 +15,26 @@
                 </div>
                 <md-autocomplete md-no-cache="vm.noCache" 
                     ng-model-options="{debounce: 1000}"
-                    md-selected-item="vm.selectedItem" 
-                    md-search-text="vm.assetItemSearchText" 
-                    md-selected-item-change="vm.selectedAssetChange(item)"
-                    md-items="item in vm.searchForAssetItems(vm.assetItemSearchText)" 
-                    md-item-text="item.AssetName" 
+                    md-selected-item="vm.selectedLease" 
+                    md-search-text="vm.leaseNumberSearchText" 
+                    md-selected-item-change="vm.selectedLeaseNumberChange(item)"
+                    md-items="item in vm.SearchForLeaseNumber(vm.leaseNumberSearchText)" 
+                    md-item-text="item.LeaseNumber" 
                     md-min-length="3"
                     placeholder="Search..." 
                     md-menu-class="autocomplete-custom-template" flex="50">
                     <md-item-template>
                         <span class="item-title">
                             <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
-                            <span> {{item.AssetName}}</span>
+                            <span> {{item.LeaseNumber}}</span>
                         </span>
-    
+
+                        <span style="color: green;" class="item-metadata">
+                        Project: {{item.Project}}
+                        </span>
                         <span class="item-metadata">
                             <span class="item-metastat">
-                                Serial Number:<span style="color: green;"> {{item.SerialNumber}} </span>
-                                Status: <span data-ng-style="(item.CurrentStatus!='Available') ? {'color': 'red'} : {'color': 'mediumseagreen'}"> {{item.CurrentStatus}} </span>
+                                Lease Date:<span style="color: green;"> {{item.Date|date:'medium'}} </span>
                             </span>
                         </span>
                     </md-item-template>
@@ -42,66 +44,48 @@
                 <fieldset>
                     <div layout="row">
                         <div flex="20">
-                            <label class="label">Name:</label>
+                            <label class="label">Project:</label>
                         </div>
                         <md-input-container flex="25">
                             <label></label>
-                            <input md-no-asterisk type="text" required ng-model="vm.newAssetType.Name">
+                            <input md-no-asterisk type="text" readonly ng-model="vm.assetLease.Project">
                         </md-input-container>
-                    </div>
-                    <div layout="row">
+
                         <div flex="20">
-                            <label class="label">Code:</label>
+                            <label class="label">Location:</label>
                         </div>
                         <md-input-container flex="25">
                             <label></label>
-                            <input md-no-asterisk type="text" required ng-model="vm.newAssetType.Code">
+                            <input md-no-asterisk type="text" readonly ng-model="vm.assetLease.Location">
                         </md-input-container>
-    
-                        <div>
-                            <md-button class="md-raised md-accent" ng-click="vm.submitForm()" 
-                                ng-disabled="newAssetTypeForm.$invalid || newAssetTypeForm.$pristine">
-                                save
-                            </md-button>
-                        </div>
                     </div>
                 </fieldset>
             </form>
         
-
             <div class="table">
-                
-                
                 <md-table-container>
-                    <div layout="row" class="tool-bar" layout-align="end" ng-if="vm.selectedTypes.length>0">
-                        <md-button  class="md-raised md-warn" ng-click="vm.deleteRowCallback(vm.selectedTypes)">
-                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                    <div layout="row" class="tool-bar" layout-align="end">
+                        <md-button class="md-raised md-accent" ng-click="vm.openUpdateForm($event)" ng-if="vm.assetLease">
+                            new update
                         </md-button>
                     </div>
-                    <table md-table md-row-select="true" multiple="true" ng-model="vm.selectedTypes" md-progress="promise">
+                    <table md-table md-row-select="true" multiple="true" md-progress="promise">
                         <thead md-head md-order="query.order">
                             <tr md-row>
                                 <th md-column><span>S/N</span></th>
-                                <th md-column><span>Name</span></th>
-                                <th md-column><span>Code</span></th>
+                                <th md-column><span>Date</span></th>
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row md-select="item.Id" md-select-id="item.Id" ng-repeat="item in vm.assetType.AssetTypes">
-                                <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
-                                <td md-cell ng-click="vm.editProperty($event, item,'Name')">{{item.Name}}</td>
-                                <td md-cell ng-click="vm.editProperty($event, item,'Code')">{{item.Code}}</td>
+                            <tr md-row md-select="update.Id" md-select-id="item.Id" ng-repeat="update in vm.assetLease.Updates">
+                                <td md-cell >{{ ($index+1) }}</td>
+                                <td md-cell >{{ update.UpdateDate | date }}</td>
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.openDetailsForm($event, update.Id, $index)">details</md-button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
-                    <md-table-pagination 
-                        md-limit="query.limit" 
-                        md-limit-options="limitOptions" 
-                        md-page="query.page" 
-                        md-total="{{vm.assetType.TotalCount}}" 
-                        md-page-select="options.pageSelect" 
-                        md-boundary-links="options.boundaryLinks" 
-                        md-on-paginate="vm.GetAssetTypes"></md-table-pagination>
                 </md-table-container>
             </div>
         </md-content>

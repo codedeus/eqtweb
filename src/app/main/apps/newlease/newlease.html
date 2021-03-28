@@ -2,13 +2,44 @@
 
     <div layout="column" class="page" flex>
         <md-card class="default header" layout="column" layout-align="center left">
-            <md-radio-group layout="row" flex="70" layout-align="start center" ng-model="vm.actionType">
+            <md-radio-group layout="row" flex="70" layout-align="start center" ng-change="vm.actionTypeChanged()" ng-model="vm.actionType">
                 <md-radio-button value="new">New</md-radio-button>
                 <md-radio-button value="edit">Edit</md-radio-button>
             </md-radio-group>
         </md-card>
 
         <md-content class="body" layout="column" flex layout-padding layout-margin ms-scroll>
+            <md-card layout="row" class="default search" ng-if="vm.actionType=='edit'">
+                <div flex="20">
+                    <label class="label search-label">Lease Number:</label>
+                </div>
+                <md-autocomplete md-no-cache="vm.noCache" 
+                    ng-model-options="{debounce: 1000}"
+                    md-selected-item="vm.selectedLease" 
+                    md-search-text="vm.leaseNumberSearchText" 
+                    md-selected-item-change="vm.selectedLeaseNumberChange(item)"
+                    md-items="item in vm.SearchForLeaseNumber(vm.leaseNumberSearchText)" 
+                    md-item-text="item.LeaseNumber" 
+                    md-min-length="3"
+                    placeholder="Search..." 
+                    md-menu-class="autocomplete-custom-template" flex="50">
+                    <md-item-template>
+                        <span class="item-title">
+                            <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
+                            <span> {{item.LeaseNumber}}</span>
+                        </span>
+
+                        <span style="color: green;" class="item-metadata">
+                           Project: {{item.Project}}
+                        </span>
+                        <span class="item-metadata">
+                            <span class="item-metastat">
+                                Lease Date:<span style="color: green;"> {{item.Date|date:'medium'}} </span>
+                            </span>
+                        </span>
+                    </md-item-template>
+                </md-autocomplete>
+            </md-card>
             <form layout-margin name="assetItemForm">
                 <!-- <h3 class="sub-title">Lease Details</h3> -->
                 <fieldset>
@@ -17,7 +48,7 @@
                             <label class="label"><span class="required">*</span>
                                 Subsidiary:</label>
                         </div>
-                        <md-input-container flex="70">
+                        <md-input-container flex="25">
                             <label></label>
                             <md-select md-no-asterisk name="subsidiary"
                                 ng-model="vm.newLease.SubsidiaryId" 
@@ -28,8 +59,7 @@
                                 </md-option>
                             </md-select>
                         </md-input-container>
-                    </div>
-                    <div layout="row">
+
                         <div flex="20">
                             <label class="label"><span class="required">*</span>
                                 Project:</label>
@@ -37,36 +67,23 @@
                         <md-input-container flex="25">
                             <label></label>
                             <md-select md-no-asterisk name="project"
-                                ng-change="vm.selectedProjectChange(vm.selectedProject.Id)"
-                                ng-model="vm.selectedProject" required>
+                                ng-change="vm.selectedProjectChange(vm.newLease.ProjectId)"
+                                ng-model="vm.newLease.ProjectId" required>
                                 <md-option ng-repeat="project in vm.project.Projects"
-                                    ng-value="project">
+                                    ng-value="project.Id">
                                     {{project.Name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
-
-                        <div flex="20">
-                            <label class="label"><span class="required">*</span>
-                                Project Site:</label>
-                        </div>
-                        <md-input-container flex="25">
-                            <label></label>
-                            <md-select md-no-asterisk name="projectSite"
-                                ng-model="vm.assetToLease.ProjectSiteId" required>
-                                <md-option ng-repeat="projectSite in vm.project.projectSites"
-                                    ng-value="projectSite.Id">
-                                    {{projectSite.SiteName}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
-
                     </div>
-                    <div layout="row">
+                    
+                </fieldset>
+                <fieldset>
+                    <md-card layout="row" class="default search">
                         <div flex="20">
                             <label class="label search-label">Asset/Item:</label>
                         </div>
-
+                        
                         <md-autocomplete md-no-cache="vm.noCache" 
                             ng-model-options="{debounce: 1000}"
                             md-selected-item="vm.selectedItem" 
@@ -75,7 +92,6 @@
                             md-items="item in vm.searchForAssetItems(vm.assetItemSearchText)" 
                             md-item-text="item.AssetName" 
                             md-min-length="3"
-                            md-floating-label="search..."
                             placeholder="Search..." 
                             md-menu-class="autocomplete-custom-template" flex="70">
                             <md-item-template>
@@ -92,6 +108,24 @@
                                 </span>
                             </md-item-template>
                         </md-autocomplete>
+                    </md-card>
+                    
+
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label"><span class="required">*</span>
+                                Project Site:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <md-select md-no-asterisk name="projectSite"
+                                ng-model="vm.selectedProjectSite" required>
+                                <md-option ng-repeat="projectSite in vm.projectSites"
+                                    ng-value="projectSite">
+                                    {{projectSite.SiteName}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
                     </div>
                     
                     <div layout="row">
@@ -129,7 +163,7 @@
                     </div>
                     <div layout="row" layout-align="center center">
                         <md-button ng-click="vm.addAssetToList()" class="md-raised md-accent" aria-label="Submit"
-                            ng-disabled="assetItemForm.$invalid">
+                            ng-disabled="assetItemForm.$invalid || vm.selectedProjectSite == null">
                             add
                         </md-button>
                     </div>
@@ -149,7 +183,7 @@
                             <tr md-row>
                                 <th md-column><span>S/N</span></th>
                                 <th md-column><span>Asset</span></th>
-                                <th md-column><span>Code</span></th>
+                                <th md-column><span>Asset Code</span></th>
                                 <!-- <th md-column><span>Number</span></th> -->
                                 <!-- <th md-column><span>Asset Group</span></th> -->
                                 <th md-column><span>Lease Cost</span></th>
@@ -165,20 +199,13 @@
                                 <td md-cell >{{item.Code}}</td>
                                 <!-- <td md-cell >{{item.Number}}</td> -->
                                 <!-- <td md-cell >{{item.AssetGroup}}</td> -->
-                                <td md-cell ng-click="vm.editProperty($event, item,'LeaseCost')">{{item.LeaseCost}}</td>
-
+                                <td md-cell >{{item.LeaseCost}}</td>
+                                <td md-cell >{{item.ProjectSite}}</td>
+                                <td md-cell>{{item.ExpectedLeaseOutDate | date}}</td>
+                                <td md-cell>{{item.ExpectedReturnDate | date}}</td>
                                 <td md-cell >
-                                    <md-select ng-model="item.ProjectSiteId" placeholder="">
-                                        <md-option ng-value="site.Id" ng-repeat="site in vm.project.projectSites">{{site.SiteName}}</md-option>
-                                    </md-select>
-                                </td>
-
-                                <td md-cell><input style="border-width: 0 0 1px 0;" md-no-asterisk type="date" name="ExpectedLeaseOutDate" ng-model="item.ExpectedLeaseOutDate"></td>
-                                <td md-cell><input style="border-width: 0 0 1px 0;" md-no-asterisk type="date" name="ExpectedReturnDate" ng-model="item.ExpectedReturnDate"></td>
-
-                                <!-- <td md-cell >
                                     <md-button class="md-raised md-accent" ng-click="vm.openEditForm($event, item, $index)">edit</md-button>
-                                </td> -->
+                                </td>
                             </tr>
                         </tbody>
                     </table>
