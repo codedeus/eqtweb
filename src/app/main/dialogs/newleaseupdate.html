@@ -51,7 +51,7 @@
                         </div>
                         <md-input-container flex="25">
                             <label></label>
-                            <input md-no-asterisk type="date" required ng-model="vm.leaseUpdate.UpdateDate">
+                            <input md-no-asterisk type="date" required ng-model="vm.leaseUpdate.UpdateDate" min="{{vm.leaseUpdate.ExpectedLeaseOutDate | date:'yyyy-MM-dd' }}" max="{{vm.maxDate | date:'yyyy-MM-dd'}}">
                         </md-input-container>
                     </div>     
                 </fieldset>  
@@ -63,7 +63,7 @@
                             <label for="excelFileInput"></label>
                             <input id="excelFileInput" ng-file-model="vm.selectedFile" type="file"/>
                         </md-input-container>
-                        <md-button class="md-accent md-raised" ng-click="vm.handleFile()">Upload</md-button>
+                        <md-button class="md-accent md-raised" ng-disabled="vm.selectedFile == null || vm.leaseUpdate.UpdateDate==null" ng-click="vm.handleFile()">Upload</md-button>
                     </div>
                   </fieldset>
                   <div class="table" ng-if="vm.updateMethod=='manual'">

@@ -43,7 +43,7 @@
             vm.selectedAssetChange = (item)=>{
                 if(item){
 
-                    if(item.CurrentStatus!="Available"){
+                    if(!item.IsAvailable){
                         UtilityService.showMessage('sorry', 'item is not currently available');
                         vm.selectedItem = null;
                         return;
@@ -200,8 +200,6 @@
                   });
                 }
             }
-
-            
         }
 
         function NewLeaseDialogController($mdDialog, dialogData){

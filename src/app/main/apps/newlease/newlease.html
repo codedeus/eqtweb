@@ -103,7 +103,7 @@
                                 <span class="item-metadata">
                                     <span class="item-metastat">
                                         Serial Number:<span style="color: green;"> {{item.SerialNumber}} </span>
-                                        Status: <span data-ng-style="(item.CurrentStatus!='Available') ? {'color': 'red'} : {'color': 'mediumseagreen'}"> {{item.CurrentStatus}} </span>
+                                        Status: <span data-ng-style="(!item.IsAvailable) ? {'color': 'red'} : {'color': 'mediumseagreen'}"> {{item.CurrentStatus}} </span>
                                     </span>
                                 </span>
                             </md-item-template>

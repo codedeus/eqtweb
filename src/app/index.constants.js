@@ -2,10 +2,10 @@
     'use strict';
     angular
         .module('fuse').constant('HmisConstants', {
-            port: ':5000',
-            instanceName: '', 
-            //port: '',
-            //instanceName:'/eqtApi', 
+            //port: ':5000',
+            //instanceName: '', 
+            port: '',
+            instanceName:'/eqtApi', 
 
             naira: "₦",
             monthNames: ["January", "February", "March", "April", "May", "June",

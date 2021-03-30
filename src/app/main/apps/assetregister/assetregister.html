@@ -257,7 +257,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row md-select="item.Id" ng-disabled="item.CurrentStatus=='Leased Out'" md-select-id="item.Id" ng-repeat="item in vm.assetItem.Items">
+                            <tr md-row md-select="item.Id" ng-disabled="!item.IsAvailable" md-select-id="item.Id" ng-repeat="item in vm.assetItem.Items">
                                 <td md-cell >{{ ($index+1) + ((query.page -1) * query.limit)}}</td>
                                 <td md-cell >{{item.AssetGroup}}</td>
                                 <td md-cell >{{item.AssetSubGroup}}</td>

@@ -758,8 +758,10 @@
 
         const GetLeaseEntriesForUpdate =(leaseId)=>{
             const deferred = $q.defer();
+            $rootScope.processingRequest = true;
             $http.get(`${HmisConstants.baseApiUrl}LeaseUpdate/leases/${leaseId}`).then(res=>{
                 res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                $rootScope.processingRequest = false;
                 deferred.resolve(res);
             });
             return deferred.promise;
@@ -768,8 +770,10 @@
 
         const GetLeaseUpdateDetails =(leaseUpdateId)=>{
             const deferred = $q.defer();
+            $rootScope.processingRequest = true;
             $http.get(`${HmisConstants.baseApiUrl}LeaseUpdate/${leaseUpdateId}`).then(res=>{
                 res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                $rootScope.processingRequest = false;
                 deferred.resolve(res);
             });
             return deferred.promise;
@@ -778,6 +782,24 @@
         const UpdateLeaseUpdateStatus =(leaseUpdateId, payload)=>{
             const deferred = $q.defer();
             $http.post(`${HmisConstants.baseApiUrl}LeaseUpdate/${leaseUpdateId}/update`,payload).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const CreateLeaseUpdate =(leaseUpdateId, payload)=>{
+            const deferred = $q.defer();
+            $http.post(`${HmisConstants.baseApiUrl}LeaseUpdate/leases/${leaseUpdateId}/updates`,payload).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const AssetLeaseExcelUpdate =(leaseUpdateId, payload)=>{
+            const deferred = $q.defer();
+            $http.post(`${HmisConstants.baseApiUrl}LeaseUpdate/leases/${leaseUpdateId}/excel-updates`,payload).then(res=>{
                 res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
                 deferred.resolve(res);
             });
@@ -853,7 +875,9 @@
             GetLeaseUpdates,
             GetLeaseUpdateDetails,
             UpdateLeaseUpdateStatus,
-            GetLeaseEntriesForUpdate
+            GetLeaseEntriesForUpdate,
+            AssetLeaseExcelUpdate,
+            CreateLeaseUpdate
         };
         return service;
     }

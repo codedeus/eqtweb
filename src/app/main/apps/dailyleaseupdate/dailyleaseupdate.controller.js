@@ -38,9 +38,12 @@
           }
         };
 
+        const getLeaseUpdates=(leaseId)=>StoreService.GetLeaseUpdates(leaseId).then((res)=>vm.assetLease = res);
+
         vm.selectedLeaseNumberChange =(lease)=>{
           if(lease){
-            StoreService.GetLeaseUpdates(lease.Id).then((res)=>vm.assetLease = res);
+            getLeaseUpdates(lease.Id);
+            //StoreService.GetLeaseUpdates(lease.Id).then((res)=>vm.assetLease = res);
           }
         }
 
@@ -73,6 +76,7 @@
                 }
                 UtilityService.showDialog(ev, 'newleaseupdate.html',itemData,'AssetStatusUpdateDialogController').then((res)=>{
                   UtilityService.showAlert('success','updated successfully');
+                  getLeaseUpdates(vm.selectedLease.Id)
                 });
               }
             })
@@ -107,6 +111,7 @@
     }).controller('AssetStatusUpdateDialogController',function(dialogData, $scope, $mdDialog, UtilityService, StoreService){
       var vm = this;
       vm.updateMethod = 'batch';
+      vm.maxDate = new Date();
       vm.leaseUpdate = dialogData.Details;
       vm.updateStatuses = dialogData.UpdateStatuses;
 
@@ -126,7 +131,8 @@
         AssetSerialNumber:'',
         EngineModel:'',
         EngineSerialNumber:'',
-        FunctionalStatus:''
+        FunctionalStatus:'',
+        Remark:''
       }];
 
       vm.downloadTemlate = function(){
@@ -156,17 +162,23 @@
       }  
 
       function uploadFile(data){
-        StoreService.BatchUploadAssetItems(data).then(function(res){
-          if(res.ErrorList.length>0){
+
+        const payload = {
+          Entries:data,
+          AssetLeaseId:vm.leaseUpdate.AssetLeaseId,
+          UpdateDate:vm.leaseUpdate.UpdateDate
+        }
+        StoreService.AssetLeaseExcelUpdate(vm.leaseUpdate.AssetLeaseId, payload).then(function(res){
+          if(/*(res && res.ErrorList && res.ErrorList.length>0) ||*/ !res.IsSuccessful){
             UtilityService.exportToExcel('asset_upload_error_list',res.ErrorList);
             UtilityService.showMessage('....','Some data could not be validated.');
           }
           else{
-            UtilityService.showAlert('success','File Uploaded Successfully');
+            vm.selectedFile = null;
+            angular.element("input[type='file']").val(null);
+            vm.leaseUpdate = {};
+            $mdDialog.hide();
           }
-          GetAllAssets();
-          vm.selectedFile = null;
-          angular.element("input[type='file']").val(null);
         });
       }
 
@@ -176,10 +188,9 @@
 
           vm.leaseUpdate.Entries.forEach(item => {
             if(item.FunctionalStatus == null){
-                errorList.push(`Functional Status for ${item.Description} - ${item.AssetCode} is required.`);
+                errorList.push(`Functional Status for ${item.Description} is required.`);
             }
           });
-
           
           if(errorList.length>0){
             var parentEl = angular.element(document.querySelector('document.body'));
@@ -218,7 +229,7 @@
             return;
           }
 
-          StoreService.CreateLeaseUpdate(vm.leaseUpdate).then((res)=>{
+          StoreService.CreateLeaseUpdate(vm.leaseUpdate.AssetLeaseId, vm.leaseUpdate).then((res)=>{
             if(res){
               vm.leaseUpdate = {};
               $mdDialog.hide();
