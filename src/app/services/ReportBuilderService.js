@@ -12,7 +12,7 @@
     var imageString;
     var hospitalName;
     HmisConstants.baseApiUrl = baseApiUrl;
-    getLogoAndHospitalName();
+    //getLogoAndHospitalName();
     toDataURL('./assets/images/logos/logo.png', function (dataUrl) {
       imageUrl = dataUrl;
     });
@@ -22,39 +22,9 @@
       buildReportHeader: buildReportHeader,
       BuildPDFText: BuildPDFText,
       displayOrPrintPdf: displayOrPrintPdf,
-      getLogoAndHospitalName: getLogoAndHospitalName,
-      printDrugDispencing: printDrugDispencing,
-      printCreditNote: printCreditNote,
-      printPatientBioData: printPatientBioData,
       textToBase64Barcode: textToBase64Barcode,
-      printRecordLabel: printRecordLabel,
-      viewCashierReport: viewCashierReport,
-      printNHISLetter: printNHISLetter,
-      printAccountStatement: printAccountStatement,
-      printAccountStatementForAll: printAccountStatementForAll,
-      viewStockBalance: viewStockBalance,
-      downloadRequisitionReport: downloadRequisitionReport,
-      downloadIssuanceReport: downloadIssuanceReport,
-      downloadHnBoxInvoice: downloadHnBoxInvoice,
-      downLoadGRNReport: downLoadGRNReport,
-      buildNewReportHeader: buildNewReportHeader,
-      printLabSampleLabel: printLabSampleLabel,
       buildtable: buildtable,
-      buildtableReport: buildtableReport,
- 
-      buildNestedtable: buildNestedtable,
-      buildNestedtableChem: buildNestedtableChem,
-      buildNestedtableForPatient: buildNestedtableForPatient,
-      buildNestedtableForWardStat: buildNestedtableForWardStat,
-      buildNestedtableHaem: buildNestedtableHaem,
 
-      buildLabReportHeader: buildLabReportHeader,
-      printBillAdjustmentReport: printBillAdjustmentReport,
-
-      printCreditNoteUpdated: printCreditNoteUpdated,
-      downloadCompiledShiftReport: downloadCompiledShiftReport,
-      downloadPatientGatePass: downloadPatientGatePass,
-      xrayResultView: xrayResultView,
       printSchemePaymentReport,
       buildFluidBalanceEntry,
       printClerkingDrugRequest,
@@ -64,12 +34,7 @@
       printInvoiceSlip,
       table,
       buildTableBody,
-      printDispensableInvoiceSlip,
-      downloadStoreItemIssuanceReport,
-      downloadStoreItemRequisitionReport,
-      downLoadGoodReceivedNoteReport,
-      printLabSampleLabelUpdated,
-      downloadStoreItemStockBalance
+      downloadLeaseInvoice
     };
 
     return service;
@@ -91,238 +56,9 @@
       return canvas.toDataURL("image/png");
     }
 
-    function getReportLogo() {
-      StoreService.GetGlobalConstants('ImageUrl').then(function (response) {
-        if (response) {
-          imageString = response.Value;
-        }
-      });
-    }
-
-    function getReporHeader() {
-      StoreService.GetGlobalConstants('ReportHeader').then(function (response) {
-        if (response) {
-          hospitalName = response.Value;
-        }
-      });
-    }
-
-    function getLogoAndHospitalName() {
-      getReportLogo();
-      getReporHeader();
-    }
-
-    function buildNestedtableForPatient(tableData, marginData) {
-      //tableData.showHeader = tableData.showHeader||true;
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                bold: true,
-                body: buildNestedTableBodyForPatient(tableData.data, tableData.columns, tableData.showHeader)
-              },
-              //margin: marginData,
-              fontSize: 10,
-              layout: tableData.showBorder ? null : 'noBorders'
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-            // border:tableData.showBorder?[true,true,true,true]:[true, false, false, true]
-          ]
-        };
-      }
-    }
-
-    function buildNestedTableBodyForPatient(data, columns, showHeader) {
-      var body = [];
-      var objName = [];
-
-      var newcols = columns.map(function (col) {
-
-        let colText = col.split('|').length === 2 ? col.split('|')[0] : col.split('=').length === 2 ? col.split('=')[0] : col;
-
-        col = {
-          text: colText,
-          bold: true
-        }
-        return col;
-      });
-
-      if (showHeader) {
-        body.push(newcols);
-      }
-
-      var count = 0;
-
-      data.forEach(function (row) {
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-          const pipeSplit = column.split('|');
-
-          if(pipeSplit.length === 2 ){
-            column = pipeSplit[1];
-            let computerName = column.split(' ').join('')
-            if (row[computerName] != undefined) {
-              row[column] = row[computerName];
-            }
-          }
-
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-
-          if (row[column].constructor === Array) {
-
-            if (objName.includes(column)) {
-              row[column] = buildNestedtableForPatient({
-                data: row[column],
-                columns: ['Male', 'Female', 'Total'],
-                width: [30, 35, 30],
-                showHeader: false,
-                showBorder: false
-              })
-
-            } else {
-              objName.push(column);
-              row[column] = buildNestedtableForPatient({
-                data: row[column],
-                columns: ['Male', 'Female', 'Total'],
-                width: [30, 35, 30],
-                showHeader: true,
-                showBorder: false
-              });
-            }
-          }
-          dataRow.push(row[column]);
-        });
-        body.push(dataRow);
-      });
-      return body;
-    }
-
-    function buildNestedtableForWardStat(tableData, marginData) {
-
-      //tableData.showHeader = tableData.showHeader||true;
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                bold: true,
-                body: buildNestedTableBodyForWardStat(tableData.data, tableData.columns, tableData.showHeader)
-              },
-              margin: marginData,
-              fontSize: 10,
-              layout: tableData.showBorder ? null : 'noBorders'
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-            // border:tableData.showBorder?[true,true,true,true]:[true, false, false, true]
-          ]
-        };
-      }
-
-    }
-
-    function buildNestedTableBodyForWardStat(data, columns, showHeader) {
-      var body = [];
-      var objName = [];
-
-      var newcols = columns.map(function (col) {
-        col = {
-          text: col,
-          bold: true
-        }
-        return col;
-      });
-      var arrData = [];
-
-      if (showHeader) {
-        body.push(newcols);
-      }
-
-      var count = 0;
-      var cout = 0;
-
-      data.forEach(function (row) {
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-
-          if (row[column].constructor === Object) {
-            row[column] = [row[column]];
-
-          }
-          if (row[column].constructor === Array) {
-
-            // row[column] = buildNestedtableForPatient({data:row[column],columns:['Male','Female','Total'],width:[5,5,5],showHeader:true})
-
-            if (objName.includes(column)) {
-              row[column] = buildNestedtableForPatient({
-                data: row[column],
-                columns: ['Male', 'Female', 'Total'],
-                width: [30, 35, 30],
-                showHeader: false,
-                showBorder: false
-              })
-
-            } else {
-              objName.push(column);
-              row[column] = buildNestedtableForPatient({
-                data: row[column],
-                columns: ['Male', 'Female', 'Total'],
-                width: [30, 35, 30],
-                showHeader: true,
-                showBorder: false
-              })
-            }
-            // cout=cout=0;
-
-
-          }
-
-          dataRow.push(row[column]);
-
-        });
-
-        body.push(dataRow);
-
-      });
-
-      return body;
-    }
- 
     function BuildPdfContent(reportObject, marginData, noBorders) {
       var pdfContent = {};
+ 
       var content = [];
       var parentGroupHead = {};
       var groupHead = [];
@@ -434,9 +170,9 @@
         var canvas = document.createElement('CANVAS');
         var ctx = canvas.getContext('2d');
         var dataURL;
-        canvas.height = 40;
-        canvas.width = 40;
-        ctx.scale(40 / this.naturalWidth, 40 / this.naturalHeight);
+        canvas.height = 80;
+        canvas.width = 80;
+        ctx.scale(80 / this.naturalWidth, 80 / this.naturalHeight);
 
         ctx.drawImage(this, 0, 0);
         dataURL = canvas.toDataURL(outputFormat);
@@ -455,7 +191,7 @@
             bold: true,
             body: [
               [{
-                  image: imageString //'/src/app/ReportLogo/logo.png'
+                  image: imageString 
                 },
                 {
                   stack: [{
@@ -488,57 +224,6 @@
           bold: true,
           text: reportTitle,
           margin: [0, 8, 0, 0]
-        },
-        {
-          canvas: [{
-            type: 'line',
-            x1: 0,
-            y1: 5,
-            x2: lineSpanLength,
-            y2: 5,
-            lineWidth: 1
-          }],
-          margin: titleMargin || [0, 5, 0, 0]
-        }
-      ];
-    }
-
-    function buildLabReportHeader(reportTitle, lineSpanLength, departmentName, logoMargin, titleMargin) {
-      hospitalName = hospitalName || 'HOSPITAL_NAME';
-      imageString = imageString || imageUrl;
-
-      return [{
-          table: {
-            widths: ['auto', lineSpanLength - 60],
-            bold: true,
-            body: [
-              [{
-                  image: imageString,
-                  margin: [0, 13, 0, 0] //'/src/app/ReportLogo/logo.png'
-                },
-                {
-                  stack: [{
-                    alignment: 'center',
-                    style: 'h1',
-                    bold: true,
-                    text: [{
-                        text: hospitalName + '\n\n',
-                        bold: true
-                      },
-                      {
-                        text: ('DEPARTMENT OF ' + departmentName + '\n' + reportTitle),
-                        fontSize: 8,
-                        bold: true
-                      }
-                    ],
-                    //text: hospitalName+'\n\n DEPARTMENT OF '+departmentName+'\n' +reportTitle,
-                    margin: [0, 13, 0, 0]
-                  }]
-                }
-              ]
-            ]
-          },
-          margin: logoMargin || [0, 5, 0, 0]
         },
         {
           canvas: [{
@@ -594,12 +279,13 @@
       ];
     }
 
-    function BuildPDFText(text, style, alignment, margin, bold, fontSize) {
+    function BuildPDFText(text, style, alignment, margin, bold, fontSize,italics) {
       return {
         text: text,
         style: style,
         alignment: alignment,
         margin: margin,
+        italics: italics||false,
         fontSize: fontSize || 14,
         bold: bold == null ? true : bold
       }
@@ -696,7 +382,7 @@
             if (row[computerName] != undefined) {
               row[column] = row[computerName];
             }
-            row[column] =  UtilityService.dateTimeParse(row[column]);
+            //row[column] =  UtilityService.dateTimeParse(row[column]);
           }
 
           if (row[column] == undefined) {
@@ -707,366 +393,6 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
           }));
-        });
-        body.push(dataRow);
-      });
-      return body;
-    }
-
-    //  Used for trimming the decimals from Database in statistics Report
-    function buildtableReport(tableData, marginData) {
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                bold: false,
-                fontSize: 8,
-                body: buildTableReportBody(tableData.data, tableData.columns, tableData.showheader)
-              },
-              margin: marginData,
-              fontSize: 8
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-
-          ]
-        };
-      }
-    }
-
-    //  Used for trimming the decimals from Database in statistics Report
-    function buildTableReportBody(data, columns, showheader) {
-      var body = [];
-
-      var newcols = columns.map(function (col) {
-        col = {
-          text: col,
-          bold: true
-        }
-        return col;
-      });
-      if (showheader) {
-        body.push(newcols);
-      }
-
-      var count = 0;
-      data.forEach(function (row) {
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-          if (row[column].constructor === Array) {
-            row[column] = buildtableReport({
-              data: row[column],
-              columns: ['Male', 'Female', 'Total'],
-              width: [200, 100, 100],
-              showheader: false
-            })
-          }
-          // var friendlyName = column.split(/(?=[A-Z])/).join(' ');
-          // row[friendlyName] = row[column];
-          dataRow.push(row[column]);
-        });
-        body.push(dataRow);
-      });
-      return body;
-    }
-
-    function buildNestedtable(tableData, marginData,nestedTableWidths) {
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                dontBreakRows: true,
-                bold: true,
-                body: buildNestedTableBody(tableData.data, tableData.columns, tableData.shouldAddHeader,nestedTableWidths)
-              },
-              margin: marginData,
-              fontSize: 10
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-
-          ]
-        };
-      }
-
-    }
-
-    function buildNestedTableBody(data, columns, shouldAddHeader,nestedTableWidths) {
-
-      var body = [];
-      data = data || [];
-      var newcols = columns.map(function (col) {
-        col = {
-          text: col,
-          bold: true,
-          fillColor: '#f7f2ed'
-        }
-        return col;
-      });
-
-      if (shouldAddHeader) {
-        body.push(newcols);
-      }
-
-      var count = 0;
-      data.forEach(function (row) {
-
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-
-          let degreeOfSensitivity = row.SensitiveTo == true && row.DegreeOfSensitivity != null ? '  (' + row.DegreeOfSensitivity + ')' : '';
-          let degreeOfResistance = row.ResistanceTo == true && row.DegreeOfResistance != null ? ' (' + row.DegreeOfResistance + ')' : '';
-          const yesIcon = { text: '', style: 'icon' };
-          const noIcon = { text: '', style: 'icon' };
-          
-          // const yesIcon = { text: '', style: 'icon' };
-          // const noIcon = { text: '', style: 'icon' };
-          
-          row.Sensitive =  row && column == 'Sensitive' && row.SensitiveTo && row.SensitiveTo == true ? [yesIcon, degreeOfSensitivity] : row && column == 'Sensitive'? noIcon:row.Sensitive;
-        
-          row.Resistance = row && column == 'Resistance' && row.ResistanceTo == true ? [yesIcon, degreeOfResistance] :row && column == 'Resistance'? noIcon:row.Resistance;
-          
-          row.Intermediate = row && column == 'Intermediate' && row.Intermediate == true ? yesIcon : row && column == 'Intermediate'? noIcon:row.Intermediate;
-
-          if (row[column].constructor === Array && row[column].length > 0 && column!='Sensitive' && column!='Resistance' && column!='Sensitive') {
-
-            row[column] = buildNestedtable({
-              data: row[column],
-              columns: ['Name', 'Sensitive', 'Intermediate', 'Resistance'],
-              width: nestedTableWidths,
-              shouldAddHeader: true
-            })
-          }
-          // var friendlyName = column.split(/(?=[A-Z])/).join(' ');
-          // row[friendlyName] = row[column];
-          dataRow.push(row[column]);
-        });
-        body.push(dataRow);
-      });
-      return body;
-    }
-
-    function buildNestedtableChem(tableData, marginData) {
-
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                bold: true,
-                body: buildNestedTableBodyChem(tableData.data, tableData.columns, tableData.showHeader)
-              },
-              margin: marginData,
-              fontSize: 10,
-              layout: tableData.showLayout ? "" : 'myCustomLayout'
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-
-          ]
-        };
-      }
-    }
-
-    function buildNestedtableHaem(tableData, marginData) {
-      if (marginData != undefined) {
-        marginData = marginData
-      } else {
-        marginData = [0, 5, 0, 0]
-      }
-      for (var i = 0; i < tableData.data.length; i++) {
-        return {
-          columns: [
-            //  { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                widths: tableData.width,
-                headerRows: 1,
-                bold: true,
-                body: buildNestedTableBodyHaem(tableData.data, tableData.columns, tableData.showHeader)
-              },
-              margin: marginData,
-              fontSize: 10,
-              layout: tableData.showLayout ? "" : 'myCustomLayout'
-            },
-            {
-              width: '*',
-              text: '',
-              bold: true
-            }
-
-          ]
-        };
-      }
-
-    }
-
-    function buildNestedTableBodyHaem(data, columns, showHeader, nestedCols) {
-      var body = [];
-      var objName = [];
-
-      var newcols = columns.map(function (col) {
-        col = {
-          text: col,
-          bold: true
-        }
-        return col;
-      });
-
-      if (showHeader) {
-        body.push(newcols);
-      }
-
-      var count = 0;
-      data.forEach(function (row) {
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-          if (column == 'Parameters') {
-            row.Parameters = row.parameters;
-          }
-          if (row[column].constructor === Array) {
-
-            //row[column] = buildNestedtableHaem({data:row[column],columns:['Name','Result','Range','Unit'],width:[70,50,50,50],showHeader:false});
-            if (objName.includes(column)) {
-              row[column] = buildNestedtableHaem({
-                data: row[column],
-                columns: ['Name', 'Result', 'Range', 'Unit'],
-                width: [90, 70, 80, 70],
-                showHeader: false,
-                showLayout: false
-              });
-
-            } else {
-              objName.push(column);
-              row[column] = buildNestedtableHaem({
-                data: row[column],
-                columns: ['Name', 'Result', 'Range', 'Unit'],
-                width: [90, 70, 80, 70],
-                showHeader: true,
-                showLayout: false
-              });
-            }
-          }
-
-          dataRow.push(row[column]);
-        });
-        body.push(dataRow);
-      });
-      return body;
-    }
-
-    function buildNestedTableBodyChem(data, columns, showHeader) {
-
-      var body = [];
-      var objName = [];
-      var newcols = columns.map(function (col) {
-        col = {
-          text: col,
-          bold: true
-        }
-        return col;
-      });
-
-      if (showHeader) {
-        body.push(newcols);
-      }
-      var count = 0;
-      data.forEach(function (row) {
-        row['S/N'] = String(++count);
-        var dataRow = [];
-        columns.forEach(function (column) {
-
-          if (row[column] == undefined) {
-            row[column] = '';
-          }
-
-          if (column == 'Range') {
-            var re = new RegExp(',', 'g');
-            row[column] = row[column].replace(re, '\n');
-          }
-
-          if (column == 'Value') {
-            row['Value'] = row.Result;
-          }
-
-          if (column == 'Parameters') {
-            row.Parameters = row.parameters;
-          }
-
-          if (row[column].constructor === Array) {
-            if (objName.includes(column)) {
-              row[column] = buildNestedtableChem({
-                data: row[column],
-                columns: ['Name', 'Value', 'Unit', 'Range'],
-                width: [90, 70, 70, 70],
-                showHeader: false,
-                showLayout: false
-              });
-
-            } else {
-              objName.push(column);
-              row[column] = buildNestedtableChem({
-                data: row[column],
-                columns: ['Name', 'Value', 'Unit', 'Range'],
-                width: [90, 70, 70, 70],
-                showHeader: true,
-                showLayout: false
-              });
-            }
-          }
-
-          dataRow.push(row[column]);
         });
         body.push(dataRow);
       });
@@ -1110,616 +436,6 @@
             win.loadURL(appDataDir);
           }
         );
-      }
-    }
-
-    function printDrugDispencing(items, patientName) {
-
-      var reportContent = {};
-      reportContent.content = [];
-
-      for (var i = 0; i < items.length; i++) {
-
-        reportContent.content.push({
-          table: {
-            widths: [325],
-            heights: [100],
-            body: [
-              [{
-                stack: [{
-                  alignment: 'center',
-                  fontSize: 18,
-                  bold: true,
-                  text: items[i].Name + '\n' + UtilityService.getDrugAdvice(items[i]) + '\n' + patientName + '                   ' + new Date().toLocaleDateString(),
-                  margin: [0, 0, 0, 0]
-                }]
-              }]
-            ]
-          },
-          margin: [85, -25, -25, -25]
-        });
-
-        if (i + 1 < items.length) {
-          reportContent.content.push({
-            text: "",
-            bold: true,
-            pageBreak: "after"
-          });
-        }
-      }
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false);
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
-      }
-    }
-
-    function printCreditNote(creditNote) {
-      var reportContent = {};
-      reportContent.content = [];
-
-      hospitalName = hospitalName || 'HOSPITAL_NAME';
-      imageString = imageString || imageUrl;
-
-      for (var i = 0; i < 3; i++) {
-
-        reportContent.content.push([{
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: "Number              : " + creditNote.Number,
-                alignment: 'left'
-              },
-              {
-                text: 'Insurance No.           : ' + creditNote.SchemeNumber,
-                alignment: 'left'
-              }
-            ]
-          },
-          {
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Name                 : ' + creditNote.Name, //+', '+ vm.encounterDetails[0]['Patient'].OtherNames,
-                alignment: 'left'
-              },
-              {
-                text: 'Organization Name  : ' + creditNote.SchemeName,
-                alignment: 'left'
-              }
-            ]
-          },
-          {
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Dependent?       : ' + !creditNote.IsCardHolder,
-                alignment: 'left'
-              },
-
-              {
-                text: 'Approval Code          : ' + creditNote.ApprovalCode,
-                alignment: 'left'
-              }
-            ]
-          },
-
-          {
-
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Dependent No.  :  ' + creditNote.DependentNumber,
-                alignment: 'left'
-              },
-              {
-                text: 'Invoice Number        :' + creditNote.InvoiceNumber, // +vm.encounterDetails[0]['Patient'].EthnicGroup,
-                alignment: 'left'
-              }
-            ]
-          }
-        ]);
-
-        reportContent.content.push({
-          canvas: [{
-            type: 'line',
-            x1: 0,
-            y1: 5,
-            x2: 500,
-            y2: 5,
-            lineWidth: 1
-          }],
-          margin: [0, 5, 0, 0]
-        });
-
-        reportContent.content.push({
-          margin: [0, 10, 0, 0],
-          fontSize: 12,
-          bold: true,
-          columns: [{
-            text: creditNote.TotalTitle + ': N' + (parseFloat(Math.round(creditNote.TotalAmount * 100) / 100)).toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            }) + ' ---- ' + UtilityService.stringToWords(creditNote.TotalAmount),
-            alignment: 'left'
-          }]
-        });
-
-        reportContent.pageSize = 'A4';
-
-        reportContent.content.push([{
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: "Number              : " + creditNote.Number,
-                alignment: 'left'
-              },
-              {
-                text: 'Insurance No.           : ' + creditNote.SchemeNumber,
-                alignment: 'left'
-              }
-            ]
-          },
-          {
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Name                 : ' + creditNote.Name, //+', '+ vm.encounterDetails[0]['Patient'].OtherNames,
-                alignment: 'left'
-              },
-              {
-                text: 'Organization Name  : ' + creditNote.SchemeName,
-                alignment: 'left'
-              }
-            ]
-          },
-          {
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Dependent?       : ' + !creditNote.IsCardHolder,
-                alignment: 'left'
-              },
-
-              {
-                text: 'Approval Code          : ' + creditNote.ApprovalCode,
-                alignment: 'left'
-              }
-            ]
-          },
-
-          {
-
-            margin: [0, 5, 0, 0],
-            fontSize: 8,
-            bold: true,
-            columns: [{
-                text: 'Dependent No.  :  ' + creditNote.DependentNumber,
-                alignment: 'left'
-              },
-              {
-                text: 'Invoice Number        :' + creditNote.InvoiceNumber, // +vm.encounterDetails[0]['Patient'].EthnicGroup,
-                alignment: 'left'
-              }
-            ]
-          }
-        ]);
-
-        reportContent.content.push({
-          canvas: [{
-            type: 'line',
-            x1: 0,
-            y1: 5,
-            x2: 500,
-            y2: 5,
-            lineWidth: 1
-          }],
-          margin: [0, 5, 0, 0]
-        });
-
-        reportContent.content.push({
-          margin: [0, 10, 0, 0],
-          fontSize: 12,
-          bold: true,
-          columns: [{
-            text: creditNote.TotalTitle + ': N' + (parseFloat(Math.round(creditNote.TotalAmount * 100) / 100)).toLocaleString(undefined, {
-              minimumFractionDigits: 2
-            }) + ' ---- ' + UtilityService.stringToWords(creditNote.TotalAmount),
-            alignment: 'left'
-          }]
-        });
-
-        reportContent.content.push({
-          canvas: [{
-            type: 'line',
-            x1: 0,
-            y1: 5,
-            x2: 500,
-            y2: 5,
-            lineWidth: 1
-          }],
-          margin: [0, 5, 0, 0]
-        });
-
-        reportContent.content.push({
-          margin: [0, 5, 0, 0],
-          fontSize: 8,
-          bold: true,
-          columns: [{
-              text: 'Billing Officer\'s Signature: _____________',
-              alignment: 'left'
-            },
-
-            {
-              text: 'Patient\'s Signature: _____________',
-              alignment: 'left'
-            }
-          ]
-        })
-
-        reportContent.content.push({
-          margin: [0, 5, 0, 0],
-          fontSize: 8,
-          columns: [{
-              text: creditNote.BillingStaff || "",
-              alignment: 'left'
-            },
-
-            {
-              text: creditNote.TransactionDate ? creditNote.TransactionDate.toLocaleDateString() : new Date().toLocaleDateString(),
-              alignment: 'left'
-            }
-          ]
-        })
-
-        if (i < 2) {
-          reportContent.content.push({
-            text: '',
-            margin: [0, 0, 0, 100]
-          });
-        }
-      }
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false);
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
-      }
-    }
-
-    function printCreditNoteUpdated(creditNote) {
-
-      var reportContent = {};
-      reportContent.content = [];
-      var reportHeader = buildReportHeader('Patient Scheme Invoice Slip', 340, [-25, -25, 0, 0], [-25, 0, 0, 0]);
-
-      reportContent.content = reportHeader;
-
-      reportContent.pageSize = {
-        width: 370,
-        height: 'auto'
-      };
-
-      reportContent.content.push(BuildPDFText(creditNote.Name + ', ' + (creditNote.Number || ''), 'header', 'center', [5, 5, 5, 5]));
-
-      reportContent.content.push(BuildPDFText('Id Number: ' + creditNote.SchemeNumber, 'header', 'center', [5, 5, 5, 5], 10, false));
-      reportContent.content.push(BuildPDFText('Organization Name  : ' + creditNote.SchemeName, 'header', 'center', [5, 5, 5, 5], 10, false));
-      reportContent.content.push(BuildPDFText(creditNote.ApprovalCodeTitle + creditNote.ApprovalCode, 'header', 'center', [5, 5, 5, 5], 10, false));
-
-
-      reportContent.content.push({
-        margin: [0, 5, 0, 0],
-        fontSize: 12,
-        bold: true,
-        columns: [{
-            text: 'Invoice Number: ' + creditNote.InvoiceNumber,
-            alignment: 'left'
-          },
-
-          {
-            text: 'Invoice Date: ' + UtilityService.FormatDate(creditNote.NoteEntries[0].TransactionDate),
-            alignment: 'right'
-          }
-        ]
-      });
-
-      reportContent.content.push({
-        canvas: [{
-          type: 'line',
-          x1: 0,
-          y1: 5,
-          x2: 340,
-          y2: 5,
-          lineWidth: 1
-        }],
-        margin: [-25, 0, 0, 0]
-      });
-
-      reportContent.content.push([
-        table(creditNote.NoteEntries, ['Name', 'Qty', 'Amount'], [190, 35, 80], null, [-25, 5, 0, 0],true,12),
-        {
-          columns: [
-            // { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                headerRows: 1,
-                fontSize: 14,
-                bold: true,
-                widths: [205, 120],
-                body: [
-                  ['Total (' + HmisConstants.naira + ')', _.sumBy(creditNote.NoteEntries, 'AmountValue').toLocaleString(undefined, {
-                    minimumFractionDigits: 2
-                  })]
-                ]
-              },
-              margin: [-25, 5, 0, 0],
-              fontSize: 14,
-              bold: true,
-              widths: [205, 120],
-              body: [
-                ['Total (' + HmisConstants.naira + ')', _.sumBy(creditNote.NoteEntries, 'AmountValue').toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })]
-              ]
-            },
-            {
-              width: '*',
-              text: '',
-              fontSize: 14
-            }
-          ]
-        }
-      ]);
-
-      reportContent.content.push({
-        margin: [0, 5, 0, 0],
-        fontSize: 10,
-        columns: [{
-          text: 'Billed By: ' + creditNote.BillingStaff || "",
-          alignment: 'left'
-        }]
-      })
-
-      reportContent.content.push({
-        margin: [0, 10, 0, 0],
-        fontSize: 10,
-        columns: [{
-          text: 'THIS IS ONLY VALID FOR SCHEME PATIENTS ',
-          alignment: 'center',
-          italics: true,
-          color: 'red',
-          bold: true
-        }]
-      })
-
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, true)
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open()
-      }
-
-
-    }
-
-    function printPatientBioData(patient) {
-
-      var reportContent = {};
-      reportContent.content = [];
-
-      var reportHeader = buildReportHeader('PATIENT BIO DATA', 528, [25, 5, 0, 5], [25, 0, 0, 0]);
-
-      reportContent.content = reportHeader;
-
-      reportContent.pageSize = 'A4';
-      reportContent.pageMargins = [8, 30, 0, -25];
-
-      reportContent.content.push([{
-        columns: [
-          // { width: '*', text: '' },
-          {
-            width: 'auto',
-            table: {
-              headerRows: 1,
-              fontSize: 14,
-              widths: [180, 330],
-              body: [
-                [{
-                  text: 'Hospital Number',
-                  style: 'tableHeader',
-                  fontSize: 14
-                }, {
-                  text: patient['Patient'].Number,
-                  style: 'tableHeader',
-                  fontSize: 14
-                }],
-                ['Surname', patient['Patient'].Surname || ''],
-                ['Other Names', patient['Patient'].OtherNames || ''],
-                ['Date of Birth', UtilityService.FormatDate(patient['Patient'].DateOfBirth) || ''],
-                ['Age', UtilityService.CalculateAge(patient['Patient'].DateOfBirth, new Date())],
-                ['Gender', patient['Gender'].Name || ''],
-                ['Address', patient['Patient'].ResidentialAddress || ''],
-                ['Phone', patient['Patient'].PhoneNumber || ''],
-                ['Religion', patient['Religion'].Name || ''],
-                ['Nationality', patient['Country'].Name || ''],
-                ['State of Origin', patient['State'].Name || ''],
-                ['Ethnic', patient['Patient'].EthnicGroup || ''],
-                ['Marital Status', patient['MaritalState'].Name || ''],
-                ['Occupation', patient['Patient'].Occupation || ''],
-                ['Next of Kin', patient['Patient'].NextOfKinName || ''],
-                ['Relationship', patient['RelationshipWithNok'].Name || ''],
-                ['NOK Phone', patient['Patient'].NextOfKinPhoneNumber || ''],
-                ['NOK Contact Address', patient['Patient'].NextOfKinAddress || ''],
-                ['Id Type', patient['Patient'].IdType || ''],
-                ['Id Number', patient['Patient'].IdNumber || ''],
-                ['Folder Numer', patient['Patient'].FolderNumber || ''],
-                ['Card Number', patient['Patient'].CardNumber || ''],
-                ['Retainer Patient?', patient['Patient'].PatientCategory == 'Scheme' && patient['Scheme'].SchemeType == 'OtherSchemes' ? 'YES' : 'NO'],
-                ['Retainer Organization', patient['Patient'].PatientCategory == 'Scheme' && patient['Scheme'].SchemeType == 'OtherSchemes' ? patient['Scheme'].Name : ''],
-                ['NHIS Patient?', patient['Patient'].PatientCategory == 'Scheme' && patient['Scheme'].SchemeType == 'NhisSchemes' ? 'YES' : 'NO'],
-                ['NHIS Organization', patient['Patient'].PatientCategory == 'Scheme' && patient['Scheme'].SchemeType == 'NhisSchemes' ? patient['Scheme'].Name : ''],
-                ['Registration Date', UtilityService.FormatDateTime(patient['Patient'].RegistrationDate) || ''],
-                ['Registered By', (patient['RegisteredBy'].LastName + ', ' + patient['RegisteredBy'].OtherNames) || '']
-              ]
-            },
-
-            margin: [25, 5, 0, 5],
-            fontSize: 14
-          },
-          {
-            width: '*',
-            text: '',
-            fontSize: 14
-          }
-        ]
-      }]);
-      reportContent.content.push({
-        text: "",
-        bold: true,
-        pageBreak: "after"
-      });
-
-      for (var i = 0; i < 7; i++) {
-        reportContent.content.push([{
-          columns: [
-            // { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                // headerRows: 1,
-                fontSize: 14,
-                widths: [110, 155],
-                body: [
-                  ['Hospital Number ', patient['Patient'].Number],
-                  ['Surname ', patient['Patient'].Surname],
-                  ['Other Names', patient['Patient'].OtherNames || ''],
-                  ['Date of Birth', UtilityService.FormatDate(patient['Patient'].DateOfBirth) || '']
-                  //['Age', UtilityService.CalculateAge(patient.DateOfBirth,new Date())]
-                ]
-              },
-
-              margin: (i < 6 ? [0, 0, 10, 0] : [0, 0, 10, -5]),
-              fontSize: 14
-            },
-            {
-              width: 'auto',
-              table: {
-                // headerRows: 1,
-                fontSize: 14,
-                widths: [110, 155],
-                body: [
-                  ['Hospital Number ', patient['Patient'].Number],
-                  ['Surname ', patient['Patient'].Surname],
-                  ['Other Names', patient['Patient'].OtherNames || ''],
-                  ['Date of Birth', UtilityService.FormatDate(patient['Patient'].DateOfBirth) || '']
-                  //['Age', UtilityService.CalculateAge(patient.DateOfBirth,new Date())]
-                ]
-              },
-
-              margin: (i < 6 ? [0, 0, 0, 0] : [0, 0, 0, -5]),
-              fontSize: 14
-            }
-          ]
-        }]);
-        if (i < 6) {
-          reportContent.content.push({
-            text: '',
-            margin: [0, 0, 0, 30]
-          });
-        }
-      }
-
-
-
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false);
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
-      }
-    }
-
-    function printRecordLabel(patient) {
-
-      var reportContent = {};
-      reportContent.content = [];
-
-      for (var i = 0; i < 6; i++) {
-        reportContent.content.push([{
-          columns: [
-            // { width: '*', text: '' },
-            {
-              width: 'auto',
-              table: {
-                headerRows: 1,
-                fontSize: 14,
-                widths: [110, 155],
-                body: [
-                  ['Hospital Number ', patient.Number],
-                  ['Surname ', patient.Surname],
-                  ['Other Names', patient.OtherNames || ''],
-                  ['Date of Birth', UtilityService.FormatDate(patient.DateOfBirth) || '']
-                  //['Age', UtilityService.CalculateAge(patient.DateOfBirth,new Date())]
-                ]
-              },
-
-              margin: [-30, -25, 5, 55],
-              fontSize: 14
-            },
-            {
-              width: 'auto',
-              table: {
-                headerRows: 1,
-                fontSize: 14,
-                widths: [110, 155],
-                body: [
-                  ['Hospital Number ', patient.Number],
-                  ['Surname ', patient.Surname],
-                  ['Other Names', patient.OtherNames || ''],
-                  ['Date of Birth', UtilityService.FormatDate(patient.DateOfBirth) || '']
-                  //['Age', UtilityService.CalculateAge(patient.DateOfBirth,new Date())]
-                ]
-              },
-
-              margin: [5, -25, 5, 55],
-              fontSize: 14
-            }
-          ]
-        }]);
-        if (i == 2) {
-          reportContent.content.push({
-            text: '',
-            margin: [0, 0, 0, 10]
-          });
-        }
-        if (i == 4) {
-          reportContent.content.push({
-            text: '',
-            margin: [0, 0, 0, 5]
-          });
-        }
-      }
-
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false);
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
       }
     }
 
@@ -4194,395 +2910,371 @@
 
     }
 
-    function printDispensableInvoiceSlip(entries,patient,invoiceNumber,paynow,paymentMode, ePaymentActive,outletName){
-      var reportContent = {};
-      reportContent.content = [];
-      var isCreditBill = paynow==true?'NO':'YES';
-      var reportHeader = buildReportHeader( 'Patient Invoice Slip', 355,[-25, -25, 0, 0],[-25, 0, 0, 0]);
 
-      reportContent.content = reportHeader;
-      reportContent.pageSize = { width: 380, height: 'auto' };
+    function downloadLeaseInvoice(data){
 
-      reportContent.watermark =  {text: '   INV', 
-      color: 'red', fontSize:2, opacity: 0.05, bold: false, italics: false};
+      imageString = imageString || imageUrl;
 
-      reportContent.content.push({
-        margin: [-25, 5, -25, 5],
-        fontSize: 12,
-        columns: [{
-            text: `Patient: ${patient.Name} ${patient.Number?'- ' +(patient.Number.toString()):''}`,
-            alignment: 'left',
-            bold:true
-          }
-        ]
+      var headingText = `Kindly find below the cost of EQUIPMENT rent to you for your operations in ${data.InvoicePeriod}`;
+
+      var noticeText = BuildPDFText(`[${headingText}]`, 'header', 'center', [5, 5, 5, 5], true,12,true);
+
+      var invoiceEntries = BuildPdfContent({
+        reportData: data.InvoiceEntries,
+        columns: ['S/N','Asset Group', 'Asset Sub Group', 'Asset Description | Description', 'Asset Code|AssetCode','Asset Type', 'Down Time', 'Up Time', 'Rate Per Day (Naira)|LeaseCost', 'Amount'],
+        width: [30,100,100, 280, 100,100, 80, 80, 80, 100]
       });
+      const invoiceContent = invoiceEntries.content;
 
-      if(patient.Age){
-        reportContent.content.push({
-          margin: [-25, 5, -25, 5],
-          fontSize: 12,
-          columns: [{
-              text: 'Patient Age:  ' + patient.Age,
-              alignment: 'left',
-              bold:true
-            }
-          ]
-        });
-      }
-      
-      reportContent.content.push({
-        margin: [-25, 5, -25, 5],
-        fontSize: 12,
-        columns: [{
-            text: 'Invoice Date:  ' + UtilityService.FormatDateTime(new Date()),
-            alignment: 'left',
-            bold:true
-          }
-        ]
-      });
+      var dd = {
 
-      reportContent.content.push({
-        margin: [-25, 5, -25, 5],
-        fontSize: 12,
-        columns: [
-          {
-            text: 'Invoice Number: ' + invoiceNumber,
-            alignment: 'left',
-            bold:true
-          }
-        ]
-      });
+        pageSize : 'A3',
+        pageMargins : [25, 25, 10, 40],
+        pageOrientation : 'landscape',
 
-      reportContent.content.push({
-        margin: [-25, 5, -25, 5],
-        fontSize: 12,
-        columns: [{
-            text: 'Biller:  ' + $rootScope.globals.currentUser.Name,
-            alignment: 'left',
-            bold:true
-          }
-        ]
-      });
-
-      if(ePaymentActive && paymentMode){
-        reportContent.content.push({
-          margin: [-25, 5, -25, 5],
-          fontSize: 12,
-          columns: [{
-              text: 'Payment Channel: '+ paymentMode,
-              alignment: 'left',
-              bold:true
-            }
-          ]
-        });
-      }
-
-      reportContent.content.push({
-        margin: [-25, 5, -25, 5],
-        fontSize: 12,
-        columns: [{
-            text: 'Credit Bill?:  ' + isCreditBill,
-            alignment: 'left',
-            bold:true
-          }
-        ]
-      });
-
-      var headingText = isCreditBill == 'YES' ? 'Items already dispenced':'Please note that costed item(s) will be dispensed after payment is made';
-
-      var bodyText3 = BuildPDFText(`[${headingText}]`, 'header', 'center', [5, 5, 5, 5], true);
-      reportContent.content.push(bodyText3);
-
-      reportContent.content.push([
-        table(entries, ['Name', 'Qty', 'Amount'], [180, 65, 80],null,[-25, 5, -25, 5],true,12),
-        {
-          columns: [
-             // { width: '*', text: '' },
-              {
-                  width: 'auto',
-                  table: {
-                      headerRows: 1,
-                      fontSize: 14,
-                      bold:true,
-                      widths: [205, 130],
-                      body: [
-                          ['Total (N)', _.sumBy(entries,'GTotal').toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})],
-                          ['Less 90% (N)', (_.sumBy(entries,'GTotal')-_.sumBy(entries,'NetAmount')).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})],
-                          ['Please Pay (N)', (_.sumBy(entries,'NetAmount')).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})]
-                      ]
-                  },
-                  margin: [-25, 5, 0, 0],
-                  fontSize: 14,
-                  bold:true
-              },
-              { width: '*', text: '', fontSize: 14 }
-          ]
+        defaultStyle : {
+          fontSize  : 12,
+          columnGap : 20
         },
-        {
-          margin: [-25, 5, 0, 0],
-          fontSize: 12,
-          columns: [{
-                  text: 'Outlet:  ' + outletName,
-                  alignment:'left',
-                  italics:true
-              }]
-          }
-      ]);
 
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function(response){
-          displayOrPrintPdf(response,true)
-        });
-      }
-      else{
-        pdfMake.createPdf(reportContent).open()
-      }
+        // Page Layout
 
-    }
+        content : {
 
-    function downloadStoreItemIssuanceReport(data, req) {
-      var reportContent = {};
-      reportContent.content = [];
-
-      var date = UtilityService.FormatDateTime(new Date());
-
-      var reportHeader = buildReportHeader('STOCK ISSUANCE VOUCHER', 820);
-
-      reportContent.content = reportHeader;
-      reportContent.pageMargins = [8, 30, 0, 10];
-
-      reportContent.pageSize = 'A4';
-      reportContent.pageOrientation = 'landscape';
-
-      reportContent.content.push({
-        columns: [{
-          table: {
-            widths: [400, 400],
+          // This table will contain ALL content
+          table : {
+            // Defining the top 2 rows as the "sticky" header rows
+            headerRows: 2,
+            // One column, full width
+            widths: ['*'],
             body: [
-              [{
-                text: 'Issuing Outlet :  ' + req.IssuingOutlet,
-                style: 'tableHeader',
-                margin: [2, 5, 2, 5]
-              }, {
-                text: 'Receiving Outlet:  ' + req.ReceivingOutlet,
-                style: 'tableHeader',
-                margin: [2, 2, 2, 2]
-              }],
-              [{
-                text: 'Date:   ' + UtilityService.FormatDate(req.Date),
-                style: 'tableHeader',
-                margin: [2, 5, 2, 5]
-              }, {
-                text: 'Issuance Number:    ' + req.Number,
-                style: 'tableHeader',
-                margin: [2, 2, 2, 2]
-              }]
-            ]
-          },
-          layout: "noBorders"
-        }]
-      });
 
-      var nonGroupedContent = BuildPdfContent({
-        reportData: data,
-        columns: ['S/N', 'Description', 'Brand Name', 'Unit Of Issue','Packs Per Packing Unit', 'Cost Price', 'Qty', 'Value'],
-        width: [30, 260, 100, 70,90, 70, 60, 70]
-      });
-      reportContent.content.push(nonGroupedContent.content);
-      
-      reportContent.content.push({
-        width: "*",
-        text: '  TOTAL:  ' + HmisConstants.naira + (_.sumBy(data, 'RawValue')).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }),
-        margin: [685, 5, 2, 2]
-      });
-
-      reportContent.content.push({
-        columns: [{
-          table: {
-            widths: [400, 400],
-            body: [
-              [{
-                text: 'Issuing Staff:  ' + req.IssuingStaff,
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }, {
-                text: 'Receiving Staff:    ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }],
-              [{
-                text: 'Signature: ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }, {
-                text: 'Signature:    ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }],
-              [{
-                text: 'Date: ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }, {
-                text: 'Date:    ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }]
-            ]
-          },
-          layout: "noBorders",
-          margin: [100, 10, 2, 100]
-        }]
-      });
-
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false)
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
-      }
-    }
-
-    function downloadStoreItemRequisitionReport(data) {
-      var reportContent = {};
-      reportContent.content = [];
-
-      var reportHeader = buildReportHeader('Item Requision Report', 820);
-
-      reportContent.content = reportHeader;
-      reportContent.pageMargins = [8, 30, 0, 10];
-
-      reportContent.pageSize = 'A4';
-      reportContent.pageOrientation = 'landscape';
-
-      reportContent.content.push({
-        columns: [{
-          table: {
-            widths: [400, 400],
-            body: [
-              [{
-                text: 'Issuing Outlet :  ' + data.IssuingOutlet,
-                style: 'tableHeader',
-                margin: [2, 5, 2, 5]
-              }, {
-                text: 'Receiving Outlet:  ' + data.ReceivingOutlet,
-                style: 'tableHeader',
-                margin: [2, 2, 2, 2]
-              }],
-              [{
-                text: 'Date:   ' + UtilityService.FormatDate(data.Date),
-                style: 'tableHeader',
-                margin: [2, 5, 2, 5]
-              }, {
-                text: 'Requisition Number:    ' + data.Number,
-                style: 'tableHeader',
-                margin: [2, 2, 2, 2]
-              }]
-            ]
-          },
-          layout: "noBorders"
-        }]
-      });
-
-      var nonGroupedContent = BuildPdfContent({
-        reportData: data.Items,
-        columns: ['S/N', 'Description', 'Unit Of Issue', 'Qty Requested', 'Qty Issued', 'Value'],
-        width: [30, 400, 75, 80, 70, 100]
-      });
-
-      reportContent.content.push(nonGroupedContent.content);
-
-      reportContent.content.push({
-        width: "*",
-        text: '  TOTAL:  ' + data.TotalValue,
-        margin: [685, 5, 2, 2]
-      });
-
-      reportContent.content.push({
-        columns: [{
-          table: {
-            widths: [550],
-            body: [
-              [{
-                text: 'Raised By:  ' + data.RequestingStaff,
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }],
-              [{
-                text: 'Signature: ___________________',
-                style: 'tableHeader',
-                margin: [2, 10, 2, 10]
-              }]
-            ]
-          },
-          layout: "noBorders",
-          margin: [2, 50, 2, 10]
-        }]
-      });
-
-      if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
-          displayOrPrintPdf(response, false)
-        });
-      } else {
-        pdfMake.createPdf(reportContent).open();
-      }
-    }
-
-    function downloadStoreItemStockBalance(items, departmentName) {
-
-      var reportContent = {};
-      reportContent.content = [];
-      var date = UtilityService.FormatDateTime(new Date());
-
-      var reportHeader = buildReportHeader('Stock Balance Report for: ' + departmentName + ' as at ' + date, 825);
-
-      reportContent.content = reportHeader;
-      reportContent.pageMargins = [8, 30, 0, 40];
-
-      reportContent.footer = function (currentPage, pageCount) {
-        return {
-          table: {
-            body: [
+              // Header Row One
+              // An array with just one "cell"
+            [{
+            columns: [
+              {
+                image:imageString,
+                //width: 150,
+              },
+              {
+                stack: [{
+                  alignment: 'center',
+                  bold: true,
+                  //color: 'yellow',
+                  fontSize:50,
+                  text: "Invoice",
+                  margin: [-20, 13, 0, 0]
+                }]
+              },
               [
-                { text: "Page " + currentPage.toString() + ' of ' + pageCount, style: 'normalText',margin:[700,0,0,35] }
-              ]
+                {
+                  text: 'web: www.nestoilgroup.com',
+                  color: '#333333',
+                  width: '*',
+                  fontSize: 12,
+                  bold: true,
+                  alignment: 'right',
+                  margin: [0, 0, 20, 15],
+                },
+                {
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          text: 'Bill To.',
+                          color: '#aaaaab',
+                          bold: true,
+                          width: '*',
+                          fontSize: 12,
+                          alignment: 'right',
+                        },
+                        {
+                          text: [
+                            { text: 'THE PROJECT MANAGER\n', fontSize: 12 },
+                            { text: data.Project, bold: true }
+                          ],
+                          bold: true,
+                          color: '#333333',
+                          fontSize: 12,
+                          alignment: 'right',
+                          width: 200,
+                        },
+                      ],
+                    }
+                  ],margin: [0, 0, 20, 15],
+                },
+              ],
+            ],
+          }],
+
+
+              // Second Header Row
+
+              [
+                {
+                  columns: [
+                    {
+                      width: 'auto',
+                      margin: [0,0,10,0],
+                      text: [
+                        { text: 'Invoice #\n', fontSize: 12, bold: true, color: '#bbbbbb' },
+                        { text: data.InvoiceNumber, fontSize: 12 }
+                      ]
+                    },
+                    {
+                      width: 'auto',
+                      margin: [0,0,10,0],
+                      text: [
+                        { text: 'Date \n', fontSize: 12, bold: true, color: '#bbbbbb' },
+                        { text: UtilityService.FormatDateTime(data.InvoiceDate), fontSize: 12 }
+                      ]
+                    },
+                    {
+                      width: 'auto',
+                      margin: [0,0,10,0],
+                      text: [
+                        { text: 'Customer ID\n', fontSize: 12, bold: true, color: '#bbbbbb' },
+                        { text: data.Project, fontSize: 12 }
+                      ]
+                    }
+                  ]
+                }
+              ],
+
+              // Now you can break your content out into the remaining rows.
+              // Or you could have one row with one cell that contains
+              // all of your content
+
+              // Content Row(s)
+
+              [noticeText],
+
+              [invoiceContent],
+              [{
+                columns: [{
+                    width: '*',
+                    text: ''
+                  },
+                  {
+                    width: 'auto',
+                    table: {
+                      headerRows: 1,
+                      fontSize: 9,
+                      widths: [30,100,100, 280, 100,100, 80, 80, 80, 100],
+                      body: [
+        
+                        [{
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: '',
+                            style: 'tableHeader',
+                            fontSize: 10,
+                            bold: true
+                          },
+                          {
+                            text: 'Total: ',
+                            style: 'tableHeader',
+                            alignment:'right',
+                            fontSize: 18,
+                            bold: true
+                          },
+                          {
+                            text: HmisConstants.naira+ (data.TotalAmount.toLocaleString(undefined, {
+                              minimumFractionDigits: 2
+                            })),
+                            style: 'tableHeader',
+                            fontSize: 18,
+                            bold: true
+                          }
+                        ]
+        
+                      ]
+                    },
+                    margin: [-22, 0, 0, 0],
+                    fontSize: 9,
+                    layout: 'noBorders'
+                  },
+                  {
+                    width: '*',
+                    text: '',
+                    fontSize: 9
+                  }
+                ]
+              }],
+              [{canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1140, y2: 5, lineWidth: 0.1 }]}],
+              [BuildPDFText(`Total in words: ${UtilityService.stringToWords(data.TotalAmount)}`, 'header', 'left', [5, 5, 5, 5], false)],
+              [{canvas: [{ type: 'line', x1: 0, y1: 5, x2: 1140, y2: 5, lineWidth: 0.1 }]}],
+              [BuildPDFText(`[ PLEASE NOTE: During IDLE TIME, please return the Equipment to the ASSET DEPT to be used by other customers, if you do not want it to accrue undue cost against you.]`, 'header', 'center', [5, 5, 5, 5], true,12,true)],
+              [{table: {
+                headerRows: 1,
+                widths: [ 80,1040],
+                body: [
+                  [
+                    {
+                      text: 'REMITTANCE',
+                      fillColor: '#eaf2f5',
+                      border: [false, true, false, true],
+                      margin: [0, 5, 0, 5],
+                      textTransform: 'uppercase',
+                    },
+                    {
+                      text: '',
+                      border: [false, true, false, true],
+                      alignment: 'right',
+                      fillColor: '#eaf2f5',
+                      margin: [0, 5, 0, 5],
+                      textTransform: 'uppercase',
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Customer ID',
+                      border: [false, false, false, true],
+                      margin: [0, 5, 0, 5],
+                      alignment: 'left',
+                    },
+                    {
+                      border: [false, false, false, true],
+                      text: data.Project,
+                      fillColor: '#f5f5f5',
+                      alignment: 'left',
+                      margin: [0, 5, 0, 5],
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Statement #',
+                      border: [false, false, false, true],
+                      margin: [0, 5, 0, 5],
+                      alignment: 'left',
+                    },
+                    {
+                      text: data.InvoiceNumber,
+                      border: [false, false, false, true],
+                      fillColor: '#f5f5f5',
+                      alignment: 'left',
+                      margin: [0, 5, 0, 5],
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Date',
+                      border: [false, false, false, true],
+                      margin: [0, 5, 0, 5],
+                      alignment: 'left',
+                    },
+                    {
+                      text: UtilityService.FormatDateTime(data.InvoiceDate),
+                      border: [false, false, false, true],
+                      fillColor: '#f5f5f5',
+                      alignment: 'left',
+                      margin: [0, 5, 0, 5],
+                    },
+                  ],
+                ],
+              }}]
             ]
           },
-          layout: 'noBorders'
-        };
+
+
+          // Table Styles
+
+          layout: {
+            hLineWidth: function(i, node) { return (i === 1 || i === 2) ? 1 : 0; },
+            vLineWidth: function(i, node) { return 0; },
+            hLineColor: function(i, node) { return (i === 1 || i === 2) ? '#eeeeee' : 'white'; },
+            vLineColor: function(i, node) { return 'white' },
+            paddingBottom: function(i, node) {
+              switch (i) {
+                case 0:
+                  return 5;
+                case 1:
+                  return 2;
+                default:
+                  return 0;
+              }
+            },
+            paddingTop: function(i, node) {
+              switch (i) {
+                case 0:
+                  return 0;
+                case 1:
+                  return 2;
+                default:
+                  return 10;
+              }
+            }
+          }
+        },
+
+
+        // Page Footer
+
+        footer : function(currentPage, pageCount) {
+          return {
+            table: {
+              body: [
+                [
+                  { text: 'Should you have any issue or concern on this invoice please contact the sender' , alignment: 'right', style: 'normalText', margin: [30, 0, 0, 0], fontSize: 12 },
+                  { text: "Page " + currentPage.toString() + ' of ' + pageCount, alignment: 'right', fontSize: 12, style: 'normalText', margin: [150, 0, 0, 0] }
+                ]
+              ]
+            },
+            layout: 'noBorders'
+          };
+        },
+
       };
 
-      var nonGroupedContent = BuildPdfContent({
-        reportData: items,
-        columns: ['S/N', 'Name', 'Brand Name', 'Unit Of Issue', 'Granular Qty', 'Cost Price', 'Stock Value','General Price','Nhis Price'],
-        width: [30, 285,100, 50, 50, 50, 50, 50, 80]
-      });
-      reportContent.content.push(nonGroupedContent.content);
-
-      reportContent.content.push({
-        width: "*",
-        text: '  TOTAL:  ' + (_.sumBy(items, 'StockValue')).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }),
-        margin: [680, 5, 2, 2]
-      });
-
-      reportContent.pageSize = 'A4';
-      reportContent.pageOrientation = 'landscape';
-      $rootScope.processingRequest = false;
       if (typeof process !== "undefined" && process.release.name.search(/node|io.js/) !== -1) {
-        pdfMake.createPdf(reportContent).getDataUrl(function (response) {
+        pdfMake.createPdf(dd).getDataUrl(function (response) {
           displayOrPrintPdf(response, false)
         });
       } else {
-        pdfMake.createPdf(reportContent).open();
+        pdfMake.createPdf(dd).open();
       }
+
     }
   }
 })();

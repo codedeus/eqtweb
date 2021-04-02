@@ -33,7 +33,8 @@
             editPropertyWithCb,
             displayNetworkError,
             toTitleCase,
-            dateTimeParse
+            dateTimeParse,
+            buildLocaleProvider
         };
 
         var self = service;
@@ -107,7 +108,7 @@
                     return FormatDate(value);
                 }
             }
-            return null;
+            return value;
         }
 
         function FormatDate(date) {
@@ -147,6 +148,22 @@
             else {
                 return date;
             }
+        }
+
+        function buildLocaleProvider(formatString) {
+            return {
+                formatDate: function (date) {
+                    if (date) return moment(date).format(formatString);
+                    else return null;
+                },
+                parseDate: function (dateString) {
+                    if (dateString) {
+                        var m = moment(dateString, formatString, true);
+                        return m.isValid() ? m.toDate() : new Date(NaN);
+                    }
+                    else return null;
+                }
+            };
         }
 
         function ResizeBase64Img(base64, width, height) {

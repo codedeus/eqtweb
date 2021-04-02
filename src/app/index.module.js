@@ -32,6 +32,7 @@
            'app.enginemodel',
            'app.enginetype',
            'app.dailyleaseupdate',
+           'app.leaseInvoice',
             // Components
             //'app.components'
             //Third-party libraries
@@ -137,5 +138,11 @@
                 state:'app.dailyleaseupdate',
                 icon:'icon-file'
             });  
+
+            msNavigationServiceProvider.saveItem('apps.leaseInvoice',{
+                title:'Lease Invoice',
+                state:'app.leaseInvoice',
+                icon:'icon-file'
+            }); 
         }  
 })();

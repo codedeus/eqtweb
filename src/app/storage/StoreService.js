@@ -806,6 +806,57 @@
             return deferred.promise;
         }
 
+        const GetLeaseInvoices =(leaseId)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}invoice/leases/${leaseId}/invoices`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const GetLeaseDetailsForInvoicing =(leaseId, startDate, endDate)=>{
+            const deferred = $q.defer();
+            $rootScope.processingRequest = true;
+            $http.get(`${HmisConstants.baseApiUrl}invoice/leases/${leaseId}`,{params:{startDate, endDate}}).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                $rootScope.processingRequest = false;
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const SearchForInvoices =(searchText)=>{
+            const deferred = $q.defer();
+            $http.get(`${HmisConstants.baseApiUrl}invoice/search`,{params:{searchText}}).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const GetInvoiceDetail =(invoiceId)=>{
+            const deferred = $q.defer();
+            $rootScope.processingRequest = true;
+            $http.get(`${HmisConstants.baseApiUrl}invoice/${invoiceId}`).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                $rootScope.processingRequest = false;
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
+        const CreateInvoice =(payload)=>{
+            const deferred = $q.defer();
+            $rootScope.processingRequest = true;
+            $http.post(`${HmisConstants.baseApiUrl}invoice`,payload).then(res=>{
+                res = JSON.parse(JSON.stringify(res.data), JSON.dateParser);
+                $rootScope.processingRequest = false;
+                deferred.resolve(res);
+            });
+            return deferred.promise;
+        }
+
         var service = {
             GetAllAssets,
             UpdateAssets,
@@ -877,7 +928,12 @@
             UpdateLeaseUpdateStatus,
             GetLeaseEntriesForUpdate,
             AssetLeaseExcelUpdate,
-            CreateLeaseUpdate
+            CreateLeaseUpdate,
+            CreateInvoice,
+            GetInvoiceDetail,
+            SearchForInvoices,
+            GetLeaseInvoices,
+            GetLeaseDetailsForInvoicing
         };
         return service;
     }

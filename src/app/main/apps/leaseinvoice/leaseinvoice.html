@@ -1,0 +1,102 @@
+<div layout="row" id="drug-register" ng-cloak="" layout-fill>
+
+    <div layout="column" class="page" flex>
+        <md-card class="default header" layout="column" layout-align="center left">
+            <!-- <md-radio-group layout="row" flex="70" layout-align="start center" ng-model="vm.updateType">
+                <md-radio-button value="current">Current Day</md-radio-button>
+                <md-radio-button value="previous">Previous Day</md-radio-button>
+            </md-radio-group> -->
+        </md-card>
+
+        <md-content class="body" layout="column" flex layout-margin ms-scroll>
+            <md-card layout="row" class="default search">
+                <div flex="20">
+                    <label class="label search-label">Lease Number:</label>
+                </div>
+                <md-autocomplete md-no-cache="vm.noCache" 
+                    ng-model-options="{debounce: 1000}"
+                    md-selected-item="vm.selectedLease" 
+                    md-search-text="vm.leaseNumberSearchText" 
+                    md-selected-item-change="vm.selectedLeaseNumberChange(item)"
+                    md-items="item in vm.SearchForLeaseNumber(vm.leaseNumberSearchText)" 
+                    md-item-text="item.LeaseNumber" 
+                    md-min-length="3"
+                    placeholder="Search..." 
+                    md-menu-class="autocomplete-custom-template" flex="50">
+                    <md-item-template>
+                        <span class="item-title">
+                            <md-icon md-svg-icon="./assets/icons/svg/user-shape.svg"></md-icon>
+                            <span> {{item.LeaseNumber}}</span>
+                        </span>
+
+                        <span style="color: green;" class="item-metadata">
+                        Project: {{item.Project}}
+                        </span>
+                        <span class="item-metadata">
+                            <span class="item-metastat">
+                                Lease Date:<span style="color: green;"> {{item.Date|date:'medium'}} </span>
+                            </span>
+                        </span>
+                    </md-item-template>
+                </md-autocomplete>
+            </md-card>
+            <form name="newAssetTypeForm">
+                <fieldset>
+                    <div layout="row">
+                        <div flex="20">
+                            <label class="label">Project:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" readonly ng-model="vm.selectedLease.Project">
+                        </md-input-container>
+
+                        <div flex="20">
+                            <label class="label">Location:</label>
+                        </div>
+                        <md-input-container flex="25">
+                            <label></label>
+                            <input md-no-asterisk type="text" readonly ng-model="vm.selectedLease.Location">
+                        </md-input-container>
+                    </div>
+                </fieldset>
+            </form>
+        
+            <div class="table">
+                <md-table-container>
+                    <div layout="row" class="tool-bar" layout-align="end">
+                        <md-button class="md-raised md-accent" ng-click="vm.openInvoiceForm($event)" ng-if="vm.selectedLease">
+                            raise invoice
+                        </md-button>
+                    </div>
+                    <table md-table md-row-select="true" multiple="true" md-progress="promise">
+                        <thead md-head md-order="query.order">
+                            <tr md-row>
+                                <th md-column><span>S/N</span></th>
+                                <th md-column><span>Invoice Period</span></th>
+                                <th md-column><span>Invoice Number</span></th>
+                                <th md-column><span>Invoice Date</span></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="invoice.Id" md-select-id="invoice.Id" ng-repeat="invoice in vm.invoices">
+                                <td md-cell >{{ ($index+1) }}</td>
+                                <td md-cell >{{ invoice.InvoicePeriod }}</td>
+                                <td md-cell >{{ invoice.InvoiceNumber }}</td>
+                                <td md-cell >{{ invoice.InvoiceDate | date }}</td>
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.openDetailsForm($event, invoice, $index)">view</md-button>
+                                </td>
+
+                                <td md-cell >
+                                    <md-button class="md-raised md-accent" ng-click="vm.printInvoice($event, invoice, $index)">print</md-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+        </md-content>
+    </div>
+</div>
