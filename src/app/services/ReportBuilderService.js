@@ -2992,6 +2992,7 @@
                         {
                           text: [
                             { text: 'THE PROJECT MANAGER\n', fontSize: 12 },
+                            { text: `${data.Subsidiary}\n`, bold: true },
                             { text: data.Project, bold: true }
                           ],
                           bold: true,
@@ -3165,6 +3166,21 @@
                       fillColor: '#eaf2f5',
                       margin: [0, 5, 0, 5],
                       textTransform: 'uppercase',
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Subsidiary',
+                      border: [false, false, false, true],
+                      margin: [0, 5, 0, 5],
+                      alignment: 'left',
+                    },
+                    {
+                      border: [false, false, false, true],
+                      text: data.Subsidiary,
+                      fillColor: '#f5f5f5',
+                      alignment: 'left',
+                      margin: [0, 5, 0, 5],
                     },
                   ],
                   [
